@@ -40,7 +40,24 @@ const allProducts = async (
     data: result,
   };
 };
+const singleProduct = async (id: string) => {
+  const result = await Products.findById(id);
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
+  }
+  return result;
+};
+const deleteProduct = async (id: string) => {
+  const product = await Products.findById(id);
+  if (!product) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
+  }
+  const result = await Products.findByIdAndDelete(id);
+  return result;
+};
 export const ProductService = {
   createProduct,
   allProducts,
+  singleProduct,
+  deleteProduct,
 };

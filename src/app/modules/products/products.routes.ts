@@ -12,5 +12,7 @@ router.post(
   ProductController.createProduct,
 );
 router.get('/products', ProductController.allProducts);
+router.get('/:id', ProductController.singleProduct);
+router.delete('/delete/:id', ProductController.deleteProduct);
 
 export const ProductRoutes = router;
