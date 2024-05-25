@@ -4,10 +4,10 @@ import { SubscriptionPlanRoutes } from '../modules/subscriptions-plan/subscripti
 import { ReviewRoutes } from '../modules/reviews/reviews.routes';
 import { subscribeRoutes } from '../modules/subscribe/subscribe.routes';
 import { FeedbackRoutes } from '../modules/feedback/feedback.routes';
-import { MessageRoutes } from '../modules/messages/message.routes';
 import { SubscriptionRoutes } from '../modules/subscriptions/subscriptions.routes';
 import { AuthRoutes } from '../modules/auth/auth.routes';
 import { PaymentRoutes } from '../modules/payment/payment.routes';
+import { ProductRoutes } from '../modules/products/products.routes';
 
 const router = express.Router();
 
@@ -46,8 +46,8 @@ const moduleRoutes = [
     route: AuthRoutes,
   },
   {
-    path: '/message',
-    route: MessageRoutes,
+    path: '/product',
+    route: ProductRoutes,
   },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));

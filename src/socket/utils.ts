@@ -1,4 +1,4 @@
-import { io } from '../server';
+import { io } from './socket';
 
 export const SocketResponse = (data: any) => {
   return {

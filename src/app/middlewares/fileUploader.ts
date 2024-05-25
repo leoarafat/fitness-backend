@@ -12,18 +12,28 @@ export const uploadFile = () => {
         file.fieldname === 'profile_image'
       ) {
         uploadPath = 'uploads/images/profile';
-      } else if (file.fieldname === 'image') {
+      } else if (file.fieldname === 'image' || file.fieldname === 'webp') {
         uploadPath = 'uploads/images/image';
+      } else if (file.fieldname === 'video') {
+        uploadPath = 'uploads/videos';
+      } else if (file.fieldname === 'pdf' || file.fieldname === 'docs') {
+        uploadPath = 'uploads/documents';
       } else {
-        uploadPath = 'uploads/images';
+        uploadPath = 'uploads/others';
       }
 
-      if (
-        file.mimetype === 'image/jpeg' ||
-        file.mimetype === 'image/png' ||
-        file.mimetype === 'image/jpg' ||
-        file.mimetype === 'video/mp4'
-      ) {
+      const allowedMimeTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/jpg',
+        'image/webp',
+        'video/mp4',
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      ];
+
+      if (allowedMimeTypes.includes(file.mimetype)) {
         cb(null, uploadPath);
       } else {
         //@ts-ignore
@@ -37,18 +47,32 @@ export const uploadFile = () => {
   });
 
   const fileFilter = (req: Request, file: any, cb: any) => {
-    const allowedFieldnames = ['image', 'profile_image', 'cover_image'];
+    const allowedFieldnames = [
+      'image',
+      'profile_image',
+      'cover_image',
+      'webp',
+      'video',
+      'pdf',
+      'docs',
+    ];
 
     if (file.fieldname === undefined) {
       // Allow requests without any files
       cb(null, true);
     } else if (allowedFieldnames.includes(file.fieldname)) {
-      if (
-        file.mimetype === 'image/jpeg' ||
-        file.mimetype === 'image/png' ||
-        file.mimetype === 'image/jpg' ||
-        file.mimetype === 'video/mp4'
-      ) {
+      const allowedMimeTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/jpg',
+        'image/webp',
+        'video/mp4',
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      ];
+
+      if (allowedMimeTypes.includes(file.mimetype)) {
         cb(null, true);
       } else {
         cb(new Error('Invalid file type'));
@@ -62,9 +86,13 @@ export const uploadFile = () => {
     storage: storage,
     fileFilter: fileFilter,
   }).fields([
-    { name: 'image', maxCount: 1 },
+    { name: 'image', maxCount: 30 },
     { name: 'cover_image', maxCount: 1 },
     { name: 'profile_image', maxCount: 1 },
+    { name: 'webp', maxCount: 1 },
+    { name: 'video', maxCount: 5 },
+    { name: 'pdf', maxCount: 1 },
+    { name: 'docs', maxCount: 1 },
   ]);
 
   return upload;

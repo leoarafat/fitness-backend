@@ -2,7 +2,7 @@ export type IProducts = {
   productName: string;
   gender: 'male' | 'female' | 'baby';
   date: Date;
-  price: number;
+  price: string;
   images: [];
   description: string;
 };

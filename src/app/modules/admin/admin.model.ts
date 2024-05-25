@@ -14,7 +14,6 @@ const AdminSchema = new Schema<IAdmin, AdminModel>(
       type: String,
       unique: true,
       sparse: true,
-      required: true,
     },
     email: {
       type: String,
@@ -38,7 +37,6 @@ const AdminSchema = new Schema<IAdmin, AdminModel>(
     gender: {
       type: String,
       enum: ['male', 'female', 'others'],
-      required: true,
     },
     location: {
       type: String,
