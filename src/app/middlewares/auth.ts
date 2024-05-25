@@ -8,6 +8,7 @@ const auth =
   (...requiredRoles: string[]) =>
   async (req: Request, res: Response, next: NextFunction) => {
     const { authorization } = req.headers;
+
     let token;
     if (authorization && authorization.startsWith('Bearer')) {
       try {
@@ -15,6 +16,7 @@ const auth =
         if (!token) {
           throw new ApiError(401, 'You are not authorized for this role');
         }
+
         // verify token
         let verifiedUser = null;
 
@@ -22,7 +24,7 @@ const auth =
           token,
           config.jwt.secret as Secret,
         );
-
+        console.log(verifiedUser);
         req.user = verifiedUser; // role , userid
 
         // Guard for role
