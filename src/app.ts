@@ -31,7 +31,7 @@ app.use('/uploads', express.static('uploads'));
 app.use('/', routes);
 
 app.get('/', async (req: Request, res: Response) => {
-  res.json('Welcome to bdCalling');
+  res.json('Welcome to Fitness APP');
 });
 //Global Error Handler
 app.use(globalErrorHandler);

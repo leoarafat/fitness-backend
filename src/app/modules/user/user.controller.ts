@@ -128,9 +128,35 @@ const forgotPass = catchAsync(async (req: Request, res: Response) => {
     message: 'Check your email!',
   });
 });
+const checkIsValidForgetActivationCode = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await UserService.checkIsValidForgetActivationCode(req.body);
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Success!',
+      data: result,
+    });
+  },
+);
+
+const resendActivationCode: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const data = req.body;
+
+    const result = await UserService.resendActivationCode(data);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Resend successfully',
+      data: result,
+    });
+  },
+);
 const resetPassword = catchAsync(async (req: Request, res: Response) => {
-  const token = req.headers.authorization || '';
-  await UserService.resetPassword(req.body, token);
+  // const token = req.headers.authorization || '';
+  await UserService.resetPassword(req.body);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -159,4 +185,6 @@ export const UserController = {
   forgotPass,
   resetPassword,
   userBaseOnGender,
+  resendActivationCode,
+  checkIsValidForgetActivationCode,
 };

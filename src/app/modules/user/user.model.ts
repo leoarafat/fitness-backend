@@ -21,7 +21,6 @@ const UserSchema = new Schema<IUser, UserModel>(
       type: String,
       unique: true,
       sparse: true,
-      required: true,
     },
     email: {
       type: String,
@@ -49,7 +48,6 @@ const UserSchema = new Schema<IUser, UserModel>(
     gender: {
       type: String,
       enum: ['male', 'female', 'others'],
-      required: true,
     },
     profile_image: {
       type: String,
@@ -99,7 +97,12 @@ const UserSchema = new Schema<IUser, UserModel>(
     },
     date_of_birth: {
       type: Date,
-      required: true,
+    },
+    verifyCode: {
+      type: String,
+    },
+    verifyExpire: {
+      type: Date,
     },
     plan_type: {
       type: String,

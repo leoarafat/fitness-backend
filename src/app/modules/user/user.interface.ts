@@ -28,6 +28,7 @@ export type IReqUser = {
 };
 
 export type IUser = {
+  [x: string]: any;
   _id?: string;
   name: string;
   user_name: string;
@@ -56,6 +57,8 @@ export type IUser = {
   looking_for: string;
   gender: 'male' | 'female' | 'others';
   plan_type: 'free' | 'basic' | 'gold' | 'premium';
+  verifyExpire: Date | null;
+  verifyCode: string | null;
 };
 export type UserModel = {
   isUserExist(

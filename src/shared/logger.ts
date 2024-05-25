@@ -19,7 +19,7 @@ const logDir = path.join(process.cwd(), 'logs', 'winston');
 export const logger = createLogger({
   level: 'info',
   format: combine(
-    label({ label: 'Dating Web' }),
+    label({ label: 'Fitness Web' }),
     timestamp(),
     myFormat,
     prettyPrint(),

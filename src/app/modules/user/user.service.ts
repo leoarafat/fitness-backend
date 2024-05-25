@@ -248,13 +248,7 @@ const changePassword = async (
 ): Promise<void> => {
   const { userId } = user as any;
   //@ts-ignore
-  const { oldPassword, newPassword, confirmPassword } = payload;
-  if (newPassword !== confirmPassword) {
-    throw new ApiError(
-      httpStatus.BAD_REQUEST,
-      "New Password and Confirm password didn't match",
-    );
-  }
+  const { oldPassword, newPassword } = payload;
   const isUserExist = await User.findOne({ _id: userId }).select('+password');
   if (!isUserExist) {
     throw new ApiError(404, 'User does not exist');
@@ -268,12 +262,12 @@ const changePassword = async (
   isUserExist.password = newPassword;
   isUserExist.save();
 };
-//*
+//!
 const forgotPass = async (payload: { email: string }) => {
-  const user = await User.findOne(
+  const user = (await User.findOne(
     { email: payload.email },
     { _id: 1, role: 1 },
-  );
+  )) as IUser;
 
   if (!user) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'User does not exist!');
@@ -292,38 +286,108 @@ const forgotPass = async (payload: { email: string }) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email not found!');
   }
 
-  const passResetToken = await jwtHelpers.createResetToken(
-    { _id: user._id },
-    config.jwt.secret as string,
-    '30m',
-  );
+  const activationCode = forgetActivationCode();
+  const expiryTime = new Date(Date.now() + 15 * 60 * 1000);
+  user.verifyCode = activationCode;
+  user.verifyExpire = expiryTime;
+  await user.save();
 
-  // const resetLink: string = config.resetlink + `token=${passResetToken}`;
-  const resetLink: string = `${config.resetlink}token=${passResetToken}&email=${profile.email}`;
   sendResetEmail(
     profile.email,
     `
       <div>
         <p>Hi, ${profile.name}</p>
-        <p>Your password reset link: <a href=${resetLink}>Click Here</a></p>
+        <p>Your password reset Code: ${activationCode}</p>
         <p>Thank you</p>
       </div>
   `,
   );
 };
-//*
-const resetPassword = async (
-  payload: { email: string; newPassword: string },
-  token: string,
-) => {
-  const { email, newPassword } = payload;
+//!
+const resendActivationCode = async (payload: { email: string }) => {
+  const email = payload.email;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User does not exist!');
+  }
+
+  let profile = null;
+  if (user.role === ENUM_USER_ROLE.USER) {
+    profile = await User.findOne({ _id: user._id });
+  }
+
+  if (!profile) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Profile not found!');
+  }
+
+  if (!profile.email) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Email not found!');
+  }
+
+  const activationCode = forgetActivationCode();
+  const expiryTime = new Date(Date.now() + 15 * 60 * 1000);
+  user.verifyCode = activationCode;
+  user.verifyExpire = expiryTime;
+  await user.save();
+
+  sendResetEmail(
+    profile.email,
+    `
+      <div>
+        <p>Hi, ${profile.name}</p>
+        
+        <p>Your password reset Code: ${activationCode}</p>
+        <p>Thank you</p>
+      </div>
+  `,
+  );
+};
+//!
+const forgetActivationCode = () => {
+  const activationCode = Math.floor(100000 + Math.random() * 900000).toString();
+  return activationCode;
+};
+//!
+const checkIsValidForgetActivationCode = async (payload: {
+  code: string;
+  email: string;
+}) => {
+  const user = await User.findOne({ email: payload.email });
+
+  if (!user) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User does not exist!');
+  }
+
+  if (user.verifyCode !== payload.code) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid reset code!');
+  }
+
+  const currentTime = new Date();
+  //@ts-ignore
+  if (currentTime > user.verifyExpire) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Reset code has expired!');
+  }
+
+  return { valid: true };
+};
+//!
+const resetPassword = async (payload: {
+  email: string;
+  newPassword: string;
+  confirmPassword: string;
+}) => {
+  const { email, newPassword, confirmPassword } = payload;
+  if (newPassword !== confirmPassword) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Password didn't match");
+  }
   const user = await User.findOne({ email }, { _id: 1 });
 
   if (!user) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'User not found!');
   }
 
-  await jwtHelpers.verifyToken(token, config.jwt.secret as string);
+  // await jwtHelpers.verifyToken(token, config.jwt.secret as string);
 
   const password = await bcrypt.hash(
     newPassword,
@@ -331,6 +395,9 @@ const resetPassword = async (
   );
 
   await User.updateOne({ email }, { password }, { new: true });
+  user.verifyCode = null;
+  user.verifyExpire = null;
+  await user.save();
 };
 //*
 const userBaseOnGender = async () => {
@@ -365,4 +432,6 @@ export const UserService = {
   forgotPass,
   resetPassword,
   userBaseOnGender,
+  resendActivationCode,
+  checkIsValidForgetActivationCode,
 };
