@@ -55,9 +55,32 @@ const deleteProduct = async (id: string) => {
   const result = await Products.findByIdAndDelete(id);
   return result;
 };
+const updateProduct = async (req: Request) => {
+  const { id } = req.params;
+  const product = await Products.findById(id);
+  if (!product) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
+  }
+
+  const { ...productData } = req.body;
+
+  //@ts-ignore
+  const images = req.files?.image;
+
+  if (images) {
+    productData.images = images.map((img: any) => img.path);
+  }
+
+  const updatedProduct = await Products.findByIdAndUpdate(id, productData, {
+    new: true,
+    runValidators: true,
+  });
+  return updatedProduct;
+};
 export const ProductService = {
   createProduct,
   allProducts,
   singleProduct,
   deleteProduct,
+  updateProduct,
 };

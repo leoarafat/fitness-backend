@@ -13,6 +13,16 @@ router.post(
 );
 router.get('/products', ProductController.allProducts);
 router.get('/:id', ProductController.singleProduct);
-router.delete('/delete/:id', ProductController.deleteProduct);
+router.delete(
+  '/delete/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  ProductController.deleteProduct,
+);
+router.patch(
+  '/edit/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  uploadFile(),
+  ProductController.updateProduct,
+);
 
 export const ProductRoutes = router;
