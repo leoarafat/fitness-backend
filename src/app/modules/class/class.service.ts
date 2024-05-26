@@ -74,31 +74,42 @@ const deleteClass = async (id: string) => {
   const result = await Classes.findByIdAndDelete(id);
   return result;
 };
-// const updateProduct = async (req: Request) => {
-//   const { id } = req.params;
-//   const product = await Products.findById(id);
-//   if (!product) {
-//     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
-//   }
+const updateClass = async (req: Request) => {
+  const { id } = req.params;
+  const classes = await Classes.findById(id);
+  if (!classes) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Class not found');
+  }
 
-//   const { ...productData } = req.body;
+  const { ...classData } = req.body;
 
-//   //@ts-ignore
-//   const images = req.files?.image;
+  //@ts-ignore
+  const video = req.files?.video;
+  //@ts-ignore
+  const pdf = req.files?.pdf;
+  //@ts-ignore
+  const docs = req.files?.docs;
 
-//   if (images) {
-//     productData.images = images.map((img: any) => img.path);
-//   }
+  if (video) {
+    classData.video = video[0].path;
+  }
+  if (pdf) {
+    classData.pdfFile = pdf[0].path;
+  }
+  if (docs) {
+    classData.docFile = docs[0].path;
+  }
 
-//   const updatedProduct = await Products.findByIdAndUpdate(id, productData, {
-//     new: true,
-//     runValidators: true,
-//   });
-//   return updatedProduct;
-// };
+  const updateClass = await Classes.findByIdAndUpdate(id, classData, {
+    new: true,
+    runValidators: true,
+  });
+  return updateClass;
+};
 export const ClassService = {
   createClass,
   allClasses,
   singleClass,
   deleteClass,
+  updateClass,
 };

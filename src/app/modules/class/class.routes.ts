@@ -23,8 +23,14 @@ router.get(
 );
 router.delete(
   '/delete/:id',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
+  auth(ENUM_USER_ROLE.ADMIN),
   ClassController.deleteClass,
+);
+router.patch(
+  '/edit/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  uploadFile(),
+  ClassController.updateClass,
 );
 
 export const ClassRoutes = router;

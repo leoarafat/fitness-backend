@@ -39,9 +39,19 @@ const deleteClass = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const updateClass = catchAsync(async (req: Request, res: Response) => {
+  const result = await ClassService.updateClass(req);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Class update successful',
+    data: result,
+  });
+});
 export const ClassController = {
   createClass,
   allClasses,
   singleClass,
   deleteClass,
+  updateClass,
 };
