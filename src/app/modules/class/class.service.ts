@@ -3,6 +3,9 @@ import { Request } from 'express';
 import ApiError from '../../../errors/ApiError';
 import httpStatus from 'http-status';
 import { Classes } from './class.model';
+import { IGenericResponse } from '../../../interfaces/paginations';
+import { IClass } from './class.interface';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
 const createClass = async (req: Request) => {
   const { ...classData } = req.body;
@@ -38,24 +41,24 @@ const createClass = async (req: Request) => {
   return result;
 };
 
-// const allProducts = async (
-//   query: Record<string, unknown>,
-// ): Promise<IGenericResponse<IProducts[]>> => {
-//   const userQuery = new QueryBuilder(Products.find(), query)
-//     .search(['productName'])
-//     .filter()
-//     .sort()
-//     .paginate()
-//     .fields();
+const allClasses = async (
+  query: Record<string, unknown>,
+): Promise<IGenericResponse<IClass[]>> => {
+  const userQuery = new QueryBuilder(Classes.find(), query)
+    .search(['topic', 'title'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
-//   const result = await userQuery.modelQuery;
-//   const meta = await userQuery.countTotal();
+  const result = await userQuery.modelQuery;
+  const meta = await userQuery.countTotal();
 
-//   return {
-//     meta,
-//     data: result,
-//   };
-// };
+  return {
+    meta,
+    data: result,
+  };
+};
 // const singleProduct = async (id: string) => {
 //   const result = await Products.findById(id);
 //   if (!result) {
@@ -95,4 +98,5 @@ const createClass = async (req: Request) => {
 // };
 export const ClassService = {
   createClass,
+  allClasses,
 };
