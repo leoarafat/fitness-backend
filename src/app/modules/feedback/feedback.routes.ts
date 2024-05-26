@@ -8,9 +8,13 @@ import { FeedbackValidation } from './feedback.validation';
 const router = express.Router();
 router.post(
   '/send',
+  auth(ENUM_USER_ROLE.USER),
   validateRequest(FeedbackValidation.post),
   FeedbackController.sendFeedBack,
 );
-router.get('/all', auth(ENUM_USER_ROLE.ADMIN), FeedbackController.getFeedback);
-router.post('/reply/:id', FeedbackController.addReplyToFeedback);
+router.get(
+  '/all',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
+  FeedbackController.getFeedback,
+);
 export const FeedbackRoutes = router;

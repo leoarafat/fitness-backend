@@ -1,40 +1,18 @@
-import mongoose, { model } from 'mongoose';
-import { IFeedback, IReply } from './feedback.interface';
-
-const replySchema = new mongoose.Schema<IReply>(
-  {
-    text: {
-      type: String,
-    },
-    status: {
-      type: String,
-      enum: ['pending', 'replied'],
-      default: 'pending',
-    },
-  },
-  {
-    timestamps: true,
-    toJSON: {
-      virtuals: true,
-    },
-  },
-);
+import mongoose, { Schema, model } from 'mongoose';
+import { IFeedback } from './feedback.interface';
 
 const feedbackSchema = new mongoose.Schema<IFeedback>(
   {
-    name: {
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+
+    text: {
       type: String,
       required: true,
     },
-    email: {
-      type: String,
-      required: true,
-    },
-    topic: {
-      type: String,
-      required: true,
-    },
-    reply: replySchema,
   },
   {
     timestamps: true,
