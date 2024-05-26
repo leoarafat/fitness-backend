@@ -59,21 +59,21 @@ const allClasses = async (
     data: result,
   };
 };
-// const singleProduct = async (id: string) => {
-//   const result = await Products.findById(id);
-//   if (!result) {
-//     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
-//   }
-//   return result;
-// };
-// const deleteProduct = async (id: string) => {
-//   const product = await Products.findById(id);
-//   if (!product) {
-//     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
-//   }
-//   const result = await Products.findByIdAndDelete(id);
-//   return result;
-// };
+const singleClass = async (id: string) => {
+  const result = await Classes.findById(id);
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Class not found');
+  }
+  return result;
+};
+const deleteClass = async (id: string) => {
+  const classes = await Classes.findById(id);
+  if (!classes) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Class not found');
+  }
+  const result = await Classes.findByIdAndDelete(id);
+  return result;
+};
 // const updateProduct = async (req: Request) => {
 //   const { id } = req.params;
 //   const product = await Products.findById(id);
@@ -99,4 +99,6 @@ const allClasses = async (
 export const ClassService = {
   createClass,
   allClasses,
+  singleClass,
+  deleteClass,
 };
