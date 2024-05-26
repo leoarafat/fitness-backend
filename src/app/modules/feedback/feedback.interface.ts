@@ -1,10 +1,7 @@
-export type IReply = {
-  text: string;
-  status: 'pending' | 'replied';
-};
+import { Types } from 'mongoose';
+import { IUser } from '../user/user.interface';
+
 export type IFeedback = {
-  name: string;
-  email: string;
-  topic: string;
-  reply: IReply;
+  user: Types.ObjectId | IUser;
+  text: string;
 };
