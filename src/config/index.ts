@@ -40,4 +40,8 @@ export default {
     from_email: process.env.FORM_EMAIL,
     api_key: process.env.SEND_GRIDAPI_KEY,
   },
+  paypal: {
+    client_id: process.env.CLIENT_ID,
+    client_secret: process.env.SECRET_KEY,
+  },
 };

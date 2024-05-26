@@ -44,11 +44,11 @@ const termsAndConditionsSchema = new mongoose.Schema(
 );
 const contactUsSchema = new mongoose.Schema(
   {
-    email: {
+    subject: {
       type: String,
       required: true,
     },
-    phone_number: {
+    options: {
       type: String,
       required: true,
     },

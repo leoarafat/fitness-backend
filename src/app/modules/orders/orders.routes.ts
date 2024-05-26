@@ -1,0 +1,12 @@
+import { Router } from 'express';
+import auth from '../../middlewares/auth';
+import { ENUM_USER_ROLE } from '../../../enums/user';
+import { OrderController } from './orders.controller';
+
+const router = Router();
+router.post(
+  '/place-order',
+  auth(ENUM_USER_ROLE.USER),
+  OrderController.makeOrder,
+);
+export const OrderRoutes = router;

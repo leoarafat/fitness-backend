@@ -20,8 +20,7 @@ router.post(
 );
 router.post(
   '/add-contact-us',
-  auth(ENUM_USER_ROLE.ADMIN),
-  validateRequest(ManageValidation.contactUs),
+
   ManageController.addContactUs,
 );
 router.post(
