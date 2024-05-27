@@ -8,6 +8,11 @@ const classSchema = new Schema<IClass>(
       ref: 'Program',
       required: true,
     },
+    series: {
+      type: Schema.Types.ObjectId,
+      ref: 'Series',
+      required: true,
+    },
     topic: {
       type: String,
       required: true,
@@ -47,6 +52,10 @@ const classSchema = new Schema<IClass>(
         },
         message: props => `${props.value} is not a valid DOC file!`,
       },
+    },
+    isRead: {
+      type: Boolean,
+      default: false,
     },
   },
   {

@@ -2,45 +2,44 @@ import { NextFunction, Request, Response } from 'express';
 import { Secret } from 'jsonwebtoken';
 import config from '../../config';
 import ApiError from '../../errors/ApiError';
+import httpStatus from 'http-status';
 import { jwtHelpers } from '../../helpers/jwtHelpers';
 
 const auth =
-  (...requiredRoles: string[]) =>
+  (...roles: string[]) =>
   async (req: Request, res: Response, next: NextFunction) => {
-    const { authorization } = req.headers;
+    try {
+      const tokenWithBearer = req.headers.authorization;
+      if (!tokenWithBearer) {
+        throw new ApiError(
+          httpStatus.UNAUTHORIZED,
+          'You are not authorized for this role',
+        );
+      }
 
-    let token;
-    if (authorization && authorization.startsWith('Bearer')) {
-      try {
-        token = authorization.split(' ')[1];
-        if (!token) {
-          throw new ApiError(401, 'You are not authorized for this role');
-        }
+      if (tokenWithBearer && tokenWithBearer.startsWith('Bearer')) {
+        const token = tokenWithBearer.split(' ')[1];
 
-        // verify token
-        let verifiedUser = null;
-
-        verifiedUser = jwtHelpers.verifyToken(
+        //verify token
+        const verifyUser = jwtHelpers.verifyToken(
           token,
           config.jwt.secret as Secret,
         );
 
-        req.user = verifiedUser; // role , userid
+        //set user to headers
+        req.user = verifyUser;
 
-        // Guard for role
-        if (
-          requiredRoles.length &&
-          !requiredRoles.includes(verifiedUser.role)
-        ) {
+        //guard user
+        if (roles.length && !roles.includes(verifyUser.role)) {
           throw new ApiError(
-            403,
-            'Access Forbidden: You do not have permission to perform this action.',
+            httpStatus.FORBIDDEN,
+            'Access Forbidden: You do not have permission to perform this action',
           );
         }
         next();
-      } catch (error) {
-        next(error);
       }
+    } catch (error) {
+      next(error);
     }
   };
 

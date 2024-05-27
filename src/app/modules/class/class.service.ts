@@ -64,6 +64,13 @@ const singleClass = async (id: string) => {
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Class not found');
   }
+  await Classes.findByIdAndUpdate(
+    id,
+    { isRead: true },
+    {
+      new: true,
+    },
+  );
   return result;
 };
 const deleteClass = async (id: string) => {
