@@ -12,6 +12,8 @@ import { ClassRoutes } from '../modules/class/class.routes';
 import { BlogRoutes } from '../modules/blog/blog.routes';
 import { CartRoutes } from '../modules/cart/cart.routes';
 import { OrderRoutes } from '../modules/orders/orders.routes';
+import { ProgramRoutes } from '../modules/program/program.routes';
+import { SeriesRoutes } from '../modules/series/series.routes';
 
 const router = express.Router();
 
@@ -52,6 +54,14 @@ const moduleRoutes = [
   {
     path: '/product',
     route: ProductRoutes,
+  },
+  {
+    path: '/program',
+    route: ProgramRoutes,
+  },
+  {
+    path: '/series',
+    route: SeriesRoutes,
   },
   {
     path: '/class',
