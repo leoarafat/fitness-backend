@@ -3,6 +3,11 @@ import { IClass } from './class.interface';
 
 const classSchema = new Schema<IClass>(
   {
+    program: {
+      type: Schema.Types.ObjectId,
+      ref: 'Program',
+      required: true,
+    },
     topic: {
       type: String,
       required: true,
