@@ -17,7 +17,7 @@ const addBlog = async (user: IReqUser, req: Request) => {
   }
   const data = {
     created_by: user?.userId,
-    images: images?.map((img: any) => img.path),
+    images: images?.map((img: any) => `/images/image/${img.filename}`),
     ...blogData,
   };
   return await Blog.create(data);
@@ -69,7 +69,7 @@ const updateBlog = async (req: Request) => {
   const images = req.files?.image;
 
   if (images) {
-    blogData.images = images.map((img: any) => img.path);
+    blogData.images = images.map((img: any) => `/images/image/${img.filename}`);
   }
 
   const updatedBlog = await Blog.findByIdAndUpdate(id, blogData, {

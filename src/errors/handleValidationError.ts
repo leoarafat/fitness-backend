@@ -13,10 +13,14 @@ const handleValidationError = (
       };
     },
   );
+
+  // Join all individual error messages into a single string
+  const combinedMessages = errors.map(e => e.message).join(', ');
+
   const statusCode = 400;
   return {
     statusCode,
-    message: 'Validation Error',
+    message: `Validation Error: ${combinedMessages}`,
     errorMessages: errors,
   };
 };

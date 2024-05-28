@@ -23,12 +23,13 @@ const allSeries = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const singleSeries = catchAsync(async (req: Request, res: Response) => {
-  const result = await seriesService.singleSeries(req.params.id);
+  const result = await seriesService.singleSeries(req.params.id, req.query);
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: 'Series retrieved successful',
-    data: result,
+    message: 'Series and class retrieved successful',
+    data: result.data,
+    meta: result.meta,
   });
 });
 const deleteSeries = catchAsync(async (req: Request, res: Response) => {

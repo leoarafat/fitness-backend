@@ -6,7 +6,6 @@ import { Program } from './program.model';
 import { IGenericResponse } from '../../../interfaces/paginations';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import { Series } from '../series/series.model';
-import { Classes } from '../class/class.model';
 import { Request } from 'express';
 
 const addProgram = async (req: Request) => {
@@ -17,7 +16,8 @@ const addProgram = async (req: Request) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'image is required');
   }
   //@ts-ignore
-  const image = files?.image[0].path;
+  // const image = files?.image[0].path;
+  const image = `/images/image/${files?.image[0].filename}`;
 
   if (!payload.title) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Title is required');
@@ -26,7 +26,7 @@ const addProgram = async (req: Request) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'image is required');
   }
   payload.image = image;
-  return await Series.create(payload);
+  return await Program.create(payload);
 };
 
 const getAllProgram = async (
@@ -54,11 +54,9 @@ const singleProgram = async (id: string) => {
   }
 
   const series = await Series.find({ program: id });
-  const classes = await Classes.find({ program: id });
   return {
     program,
     series,
-    classes,
   };
 };
 const deleteProgram = async (id: string) => {
@@ -82,14 +80,15 @@ const updateProgram = async (req: Request) => {
   const image = req.files?.image;
 
   if (image) {
-    programData.image = image[0].path;
+    // programData.image = image[0].path;
+    programData.image = `/images/image/${image[0].filename}`;
   }
 
-  const updateClass = await Program.findByIdAndUpdate(id, programData, {
+  const result = await Program.findByIdAndUpdate(id, programData, {
     new: true,
     runValidators: true,
   });
-  return updateClass;
+  return result;
 };
 export const programService = {
   addProgram,

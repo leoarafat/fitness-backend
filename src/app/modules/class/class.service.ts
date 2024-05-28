@@ -14,19 +14,20 @@ const createClass = async (req: Request) => {
   //@ts-ignore
   if (files?.pdf) {
     //@ts-ignore
-    pdfFile = files?.pdf[0].path;
+    // pdfFile = files?.pdf[0].path;
+    pdfFile = `/documents/${files.pdf[0].filename}`;
   }
   let docFile = undefined;
   //@ts-ignore
   if (files?.docs) {
     //@ts-ignore
-    docFile = files?.docs[0].path;
+    docFile = `/documents/${files.docs[0].filename}`;
   }
   let video = undefined;
   //@ts-ignore
   if (files?.video) {
     //@ts-ignore
-    video = files?.docs[0].path;
+    video = `/videos/${files.video[0].filename}`;
   }
 
   if (!pdfFile || !docFile || !video) {
@@ -44,15 +45,15 @@ const createClass = async (req: Request) => {
 const allClasses = async (
   query: Record<string, unknown>,
 ): Promise<IGenericResponse<IClass[]>> => {
-  const userQuery = new QueryBuilder(Classes.find(), query)
+  const classQuery = new QueryBuilder(Classes.find(), query)
     .search(['topic', 'title'])
     .filter()
     .sort()
     .paginate()
     .fields();
 
-  const result = await userQuery.modelQuery;
-  const meta = await userQuery.countTotal();
+  const result = await classQuery.modelQuery;
+  const meta = await classQuery.countTotal();
 
   return {
     meta,
@@ -72,6 +73,22 @@ const singleClass = async (id: string) => {
     },
   );
   return result;
+};
+const getClassBySeries = async (id: string, query: Record<string, unknown>) => {
+  const userQuery = new QueryBuilder(Classes.find({ series: id }), query)
+    .search(['topic', 'title'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await userQuery.modelQuery;
+  const meta = await userQuery.countTotal();
+
+  return {
+    meta,
+    data: result,
+  };
 };
 const deleteClass = async (id: string) => {
   const classes = await Classes.findById(id);
@@ -98,13 +115,14 @@ const updateClass = async (req: Request) => {
   const docs = req.files?.docs;
 
   if (video) {
-    classData.video = video[0].path;
+    // classData.video = video[0].path;
+    classData.video = `/videos/${video[0].filename}`;
   }
   if (pdf) {
-    classData.pdfFile = pdf[0].path;
+    classData.pdfFile = `/documents/${pdf[0].filename}`;
   }
   if (docs) {
-    classData.docFile = docs[0].path;
+    classData.docFile = `/documents/${docs[0].filename}`;
   }
 
   const updateClass = await Classes.findByIdAndUpdate(id, classData, {
@@ -119,4 +137,5 @@ export const ClassService = {
   singleClass,
   deleteClass,
   updateClass,
+  getClassBySeries,
 };

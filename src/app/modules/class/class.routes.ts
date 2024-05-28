@@ -21,6 +21,11 @@ router.get(
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   ClassController.singleClass,
 );
+router.get(
+  '/by-series/:id',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
+  ClassController.getClassBySeries,
+);
 router.delete(
   '/delete/:id',
   auth(ENUM_USER_ROLE.ADMIN),

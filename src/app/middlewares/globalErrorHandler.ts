@@ -83,6 +83,15 @@ const globalErrorHandler: ErrorRequestHandler = (
           message: `${field} must be unique`,
         },
       ]);
+  } else if (error instanceof TypeError) {
+    statusCode = 400;
+    message = error.message;
+    errorMessages = [
+      {
+        path: '',
+        message: error.message,
+      },
+    ];
   } else if (error instanceof Error) {
     message = error?.message;
     errorMessages = error?.message

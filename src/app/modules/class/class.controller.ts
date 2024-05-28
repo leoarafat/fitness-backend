@@ -30,6 +30,15 @@ const singleClass = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getClassBySeries = catchAsync(async (req: Request, res: Response) => {
+  const result = await ClassService.getClassBySeries(req.params.id, req.query);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Class retrieved successful',
+    data: result,
+  });
+});
 const deleteClass = catchAsync(async (req: Request, res: Response) => {
   const result = await ClassService.deleteClass(req.params.id);
   sendResponse(res, {
@@ -54,4 +63,5 @@ export const ClassController = {
   singleClass,
   deleteClass,
   updateClass,
+  getClassBySeries,
 };

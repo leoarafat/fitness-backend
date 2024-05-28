@@ -17,7 +17,7 @@ const createProduct = async (req: Request) => {
   }
   const result = await Products.create({
     ...productData,
-    images: images?.map((img: any) => img.path),
+    images: images?.map((img: any) => `/images/image/${img.filename}`),
   });
   return result;
 };
@@ -68,7 +68,9 @@ const updateProduct = async (req: Request) => {
   const images = req.files?.image;
 
   if (images) {
-    productData.images = images.map((img: any) => img.path);
+    productData.images = images.map(
+      (img: any) => `/images/image/${img.filename}`,
+    );
   }
 
   const updatedProduct = await Products.findByIdAndUpdate(id, productData, {

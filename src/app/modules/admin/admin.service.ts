@@ -82,12 +82,7 @@ const getSingleUser = async (id: string): Promise<IUser | null> => {
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
-  const updatedResult = {
-    ...result.toObject(),
-    profile_image: updateImageUrl(result.profile_image).replace(/\\/g, '/'),
-    cover_image: updateImageUrl(result.cover_image).replace(/\\/g, '/'),
-  };
-  return updatedResult;
+  return result;
 };
 const getAllAdmin = async () => {
   const results = await Admin.find({}).lean();
@@ -116,7 +111,7 @@ const updateAdmin = async (
   //@ts-ignore
   if (files && files?.profile_image) {
     //@ts-ignore
-    profile_image = files.profile_image[0].path;
+    profile_image = `/images/profile/${files.profile_image[0].filename}`;
   }
 
   //@ts-ignore
