@@ -23,12 +23,13 @@ const allPrograms = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const singleProgram = catchAsync(async (req: Request, res: Response) => {
-  const result = await programService.singleProgram(req.params.id);
+  const result = await programService.singleProgram(req.params.id, req.query);
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: 'Program retrieved successful',
-    data: result,
+    data: result.data,
+    meta: result.meta as any,
   });
 });
 const deleteProgram = catchAsync(async (req: Request, res: Response) => {

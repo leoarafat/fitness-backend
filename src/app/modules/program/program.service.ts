@@ -7,6 +7,7 @@ import { IGenericResponse } from '../../../interfaces/paginations';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import { Series } from '../series/series.model';
 import { Request } from 'express';
+import { Classes } from '../class/class.model';
 
 const addProgram = async (req: Request) => {
   const payload = req.body;
@@ -47,18 +48,54 @@ const getAllProgram = async (
     data: result,
   };
 };
-const singleProgram = async (id: string) => {
+
+const singleProgram = async (id: string, query: Record<string, unknown>) => {
   const program = await Program.findById(id);
   if (!program) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Program not found');
   }
 
-  const series = await Series.find({ program: id });
-  return {
+  const serieses = await Series.find({ program: id });
+
+  const seriesWithClasses = await Promise.all(
+    serieses.map(async series => {
+      const classQuery = new QueryBuilder(
+        Classes.find({ series: series._id }),
+        query,
+      )
+        .search(['topic', 'title'])
+        .filter()
+        .sort()
+        .paginate()
+        .fields();
+
+      const classes = await classQuery.modelQuery;
+
+      return {
+        ...series.toObject(),
+        classes,
+      };
+    }),
+  );
+
+  const totalClasses = seriesWithClasses.reduce(
+    (acc, series) => acc + series.classes.length,
+    0,
+  );
+  const result = {
     program,
-    series,
+    series: seriesWithClasses,
+  };
+  const meta = {
+    totalSeries: Number(serieses.length),
+    totalClasses,
+  };
+  return {
+    meta,
+    data: result,
   };
 };
+
 const deleteProgram = async (id: string) => {
   const program = await Program.findById(id);
   if (!program) {
