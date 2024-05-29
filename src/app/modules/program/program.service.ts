@@ -118,10 +118,14 @@ const singleProgram = async (id: string, query: Record<string, unknown>) => {
         .fields();
 
       const classes = await classQuery.modelQuery;
-
+      const totalVideoDuration = classes.reduce(
+        (acc, currentClass) => acc + (currentClass.videoDuration || 0),
+        0,
+      );
       return {
         ...series.toObject(),
         classes,
+        totalVideoDuration,
       };
     }),
   );

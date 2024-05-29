@@ -33,6 +33,9 @@ const classSchema = new Schema<IClass>(
       type: String,
       required: true,
     },
+    videoDuration: {
+      type: Number,
+    },
     pdfFile: {
       type: String,
       required: true,

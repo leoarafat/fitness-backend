@@ -8,7 +8,8 @@ import { IClass } from './class.interface';
 import QueryBuilder from '../../../builder/QueryBuilder';
 
 const createClass = async (req: Request) => {
-  const { ...classData } = req.body;
+  const { ...classData } = req.body as IClass;
+
   const { files } = req;
   let pdfFile = undefined;
   //@ts-ignore
@@ -65,14 +66,14 @@ const singleClass = async (id: string) => {
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Class not found');
   }
-  await Classes.findByIdAndUpdate(
+  const data = await Classes.findByIdAndUpdate(
     id,
     { isRead: true },
     {
       new: true,
     },
   );
-  return result;
+  return data;
 };
 const getClassBySeries = async (id: string, query: Record<string, unknown>) => {
   const userQuery = new QueryBuilder(Classes.find({ series: id }), query)
