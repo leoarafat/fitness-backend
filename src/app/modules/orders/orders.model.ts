@@ -46,6 +46,11 @@ const orderSchema = new Schema<IOrder>(
       type: Number,
       required: true,
     },
+    orderStatus: {
+      type: String,
+      enum: ['pending', 'deliver', 'shipped'],
+      default: 'pending',
+    },
   },
   {
     timestamps: true,

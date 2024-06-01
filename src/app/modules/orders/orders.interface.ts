@@ -13,4 +13,5 @@ export type IOrder = {
   paymentMethod: 'card' | 'paypal';
   transactionId: string;
   payerId: string;
+  orderStatus: 'pending' | 'deliver' | 'shipped';
 };

@@ -33,9 +33,20 @@ const getSingle = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const updateOrder = catchAsync(async (req: Request, res: Response) => {
+  const result = await OrderService.updateOrder(req);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Order update successful',
+    data: result,
+  });
+});
 
 export const OrderController = {
   makeOrder,
   getAllOrders,
   getSingle,
+  updateOrder,
 };

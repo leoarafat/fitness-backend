@@ -10,6 +10,7 @@ import { Products } from '../products/products.model';
 import User from '../user/user.model';
 import { generateTransactionId } from '../../../utils/uniqueId';
 import QueryBuilder from '../../../builder/QueryBuilder';
+import { Request } from 'express';
 
 const clientId = config.paypal.client_id;
 const clientSecret = config.paypal.client_secret;
@@ -142,18 +143,19 @@ const makeOrder = async (payload: Partial<IOrder>) => {
   }
 };
 const getAllOrders = async (query: Record<string, any>) => {
-  const ordersQuery = new QueryBuilder(Order.find({}), query)
+  const orderQuery = new QueryBuilder(Order.find(), query)
     .search(['address'])
-    .fields()
     .filter()
     .sort()
-    .paginate();
+    .paginate()
+    .fields();
 
-  const result = ordersQuery.modelQuery;
-  const meta = ordersQuery.countTotal;
+  const result = await orderQuery.modelQuery;
+  const meta = await orderQuery.countTotal();
+
   return {
-    data: result,
     meta,
+    data: result,
   };
 };
 const getSingle = async (id: string) => {
@@ -163,8 +165,22 @@ const getSingle = async (id: string) => {
   }
   return isExist;
 };
+const updateOrder = async (req: Request) => {
+  const data = req.body;
+  const { id } = req.params;
+  const isExist = await Order.findById(id);
+  if (!isExist) {
+    throw new ApiError(404, 'Order not found');
+  }
+  const { ...orderData } = data;
+  return await Order.findByIdAndUpdate(id, orderData, {
+    new: true,
+    runValidators: true,
+  });
+};
 export const OrderService = {
   makeOrder,
   getAllOrders,
   getSingle,
+  updateOrder,
 };

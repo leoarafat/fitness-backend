@@ -10,13 +10,18 @@ router.post(
   OrderController.makeOrder,
 );
 router.get(
-  '/orders',
+  '/all',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   OrderController.getAllOrders,
 );
 router.get(
   '/single/:id',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.USER),
   OrderController.getSingle,
+);
+router.patch(
+  '/update/:id',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  OrderController.updateOrder,
 );
 export const OrderRoutes = router;
