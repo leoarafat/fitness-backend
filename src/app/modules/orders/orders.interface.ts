@@ -7,11 +7,9 @@ export type IOrder = {
   product: Types.ObjectId | IProducts;
   quantity: number;
   totalAmount: number;
+  paymentId: string;
+  paymentStatus: string;
   deliveryDate: Date;
-  address: string;
-  contactNumber: string;
-  paymentMethod: 'card' | 'paypal';
   transactionId: string;
-  payerId: string;
   orderStatus: 'pending' | 'deliver' | 'shipped';
 };

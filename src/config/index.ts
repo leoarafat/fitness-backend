@@ -44,4 +44,7 @@ export default {
     client_id: process.env.CLIENT_ID,
     client_secret: process.env.SECRET_KEY,
   },
+  stripe: {
+    stripe_secret: process.env.STRIPE_SECRET_KEY,
+  },
 };

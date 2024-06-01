@@ -13,29 +13,23 @@ const orderSchema = new Schema<IOrder>(
       ref: 'Product',
       required: true,
     },
-    address: {
-      type: String,
-      required: true,
-    },
+
     transactionId: {
       type: String,
       required: true,
     },
-    payerId: {
+    paymentId: {
       type: String,
       required: true,
     },
-    contactNumber: {
-      type: String,
-      required: true,
-    },
+
     deliveryDate: {
       type: Date,
       required: true,
     },
-    paymentMethod: {
+    paymentStatus: {
       type: String,
-      enum: ['card', 'paypal'],
+      enum: ['paid', 'unpaid'],
       required: true,
     },
     quantity: {

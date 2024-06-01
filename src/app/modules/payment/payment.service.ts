@@ -1,8 +1,9 @@
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import Stripe from 'stripe';
+import config from '../../../config';
 
-const stripe = new Stripe('your-secret-key');
+const stripe = new Stripe(config.stripe.stripe_secret as string);
 const makePaymentIntent = async (payload: { price: number }) => {
   if (typeof payload.price !== 'number' || payload.price <= 0) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid payment amount');
