@@ -12,6 +12,15 @@ const totalCount = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const totalIncomes = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashboardService.totalIncomes();
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Data retrieved successful',
+    data: result,
+  });
+});
 const getMonthlySubscriptionGrowth = catchAsync(
   async (req: Request, res: Response) => {
     const year = req.query.year
@@ -38,9 +47,20 @@ const getMonthlyUserGrowth = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const incomeGrowth = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashboardService.incomeGrowth();
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Data retrieved successful',
+    data: result,
+  });
+});
 
 export const DashboardController = {
   totalCount,
   getMonthlySubscriptionGrowth,
   getMonthlyUserGrowth,
+  totalIncomes,
+  incomeGrowth,
 };

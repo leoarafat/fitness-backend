@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { getYearRange } from '../../../helpers/getYears';
 import { logger } from '../../../shared/logger';
 import { Order } from '../orders/orders.model';
@@ -143,8 +144,109 @@ const getMonthlyUserGrowth = async (year?: number) => {
     throw error;
   }
 };
+const totalIncomes = async () => {
+  const totalSubscription = await Subscription.aggregate([
+    {
+      $group: {
+        _id: null,
+        totalEarnings: { $sum: '$amount' },
+      },
+    },
+  ]);
+
+  const totalEarning =
+    totalSubscription.length > 0 ? totalSubscription[0].totalEarnings : 0;
+  const totalEcommerce = await Order.aggregate([
+    {
+      $group: {
+        _id: null,
+        totalEarnings: { $sum: '$totalAmount' },
+      },
+    },
+  ]);
+  const totalEarnings =
+    totalEcommerce.length > 0 ? totalEcommerce[0].totalEarnings : 0;
+  const totalIncome = totalEarning + totalEarnings;
+  return {
+    totalSubscriptionIncome: totalEarning,
+    totalEcommerceIncome: totalEarnings,
+    totalIncome,
+  };
+};
+const incomeGrowth = async () => {
+  const last12Months = new Date();
+  last12Months.setMonth(last12Months.getMonth() - 12);
+
+  const orderAggregation = [
+    { $match: { createdAt: { $gte: last12Months } } },
+    {
+      $group: {
+        _id: { year: { $year: '$createdAt' }, month: { $month: '$createdAt' } },
+        totalAmount: { $sum: '$totalAmount' },
+      },
+    },
+    { $sort: { '_id.year': 1, '_id.month': 1 } },
+  ];
+
+  const subscriptionAggregation = [
+    { $match: { createdAt: { $gte: last12Months } } },
+    {
+      $group: {
+        _id: { year: { $year: '$createdAt' }, month: { $month: '$createdAt' } },
+        totalAmount: { $sum: '$amount' },
+      },
+    },
+    { $sort: { '_id.year': 1, '_id.month': 1 } },
+  ];
+  //@ts-ignore
+  const orderAmounts = await Order.aggregate(orderAggregation);
+
+  const subscriptionAmounts = await Subscription.aggregate(
+    //@ts-ignore
+    subscriptionAggregation,
+  );
+
+  const combinedAmounts = {};
+
+  orderAmounts.forEach(order => {
+    const key = `${order._id.year}-${order._id.month}`;
+    //@ts-ignore
+    if (!combinedAmounts[key]) {
+      //@ts-ignore
+      combinedAmounts[key] = 0;
+    }
+    //@ts-ignore
+    combinedAmounts[key] += order.totalAmount;
+  });
+
+  subscriptionAmounts.forEach(subscription => {
+    const key = `${subscription._id.year}-${subscription._id.month}`;
+    //@ts-ignore
+    if (!combinedAmounts[key]) {
+      //@ts-ignore
+      combinedAmounts[key] = 0;
+    }
+    //@ts-ignore
+    combinedAmounts[key] += subscription.totalAmount;
+  });
+
+  const result = Object.keys(combinedAmounts).map(key => {
+    const [year, month] = key.split('-');
+    return {
+      year: parseInt(year),
+      month: parseInt(month),
+      //@ts-ignore
+      totalAmount: combinedAmounts[key],
+    };
+  });
+
+  console.log(result);
+};
+
 export const DashboardService = {
   totalCount,
   getMonthlySubscriptionGrowth,
   getMonthlyUserGrowth,
+  totalIncomes,
+  incomeGrowth,
 };

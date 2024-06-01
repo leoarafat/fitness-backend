@@ -1,5 +1,4 @@
-import { Schema, Types } from 'mongoose';
-import { IPayment } from '../payment/payment.interface';
+import { Schema } from 'mongoose';
 
 type SubscriptionStatus = 'paid' | 'unpaid' | 'trail';
 type SubscriptionPlan = 'free' | 'basic' | 'gold' | 'premium';
@@ -14,5 +13,5 @@ export type ISubscription = {
   plan_type: SubscriptionPlan;
   status: SubscriptionState;
   trasactionId?: string;
-  payment_id: Types.ObjectId | IPayment;
+  amount: number;
 };

@@ -9,6 +9,11 @@ router.get(
   DashboardController.totalCount,
 );
 router.get(
+  '/incomes',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  DashboardController.totalIncomes,
+);
+router.get(
   '/subscription-growth',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   DashboardController.getMonthlySubscriptionGrowth,
@@ -17,5 +22,10 @@ router.get(
   '/user-growth',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   DashboardController.getMonthlyUserGrowth,
+);
+router.get(
+  '/income-growth',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  DashboardController.incomeGrowth,
 );
 export const DashboardRoutes = router;
