@@ -11,23 +11,11 @@ import { Classes } from '../class/class.model';
 
 //*
 const addSeries = async (req: Request) => {
-  const payload = req.body;
-  // const { files } = req;
-  // //@ts-ignore
-  // if (!files?.video) {
-  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Video is required');
-  // }
-  // //@ts-ignore
-  // // const video = files?.video[0].path;
-  // const video = `/videos/${files?.video[0].filename}`;
+  const payload = req.body as ISeries;
 
-  if (!payload.title || !payload.name) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Title, name is required');
+  if (!payload.title || !payload.program) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Title, Program is required');
   }
-  // if (!video) {
-  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Video is required');
-  // }
-  // payload.video = video;
   return (await Series.create(payload)).populate('program');
 };
 
@@ -98,14 +86,6 @@ const updateSeries = async (req: Request) => {
   }
 
   const { ...seriesData } = req.body;
-
-  // //@ts-ignore
-  // const video = req.files?.video;
-
-  // if (video) {
-  //   // seriesData.video = video[0].path;
-  //   seriesData.video = `/videos/${video[0].filename}`;
-  // }
 
   const result = await Series.findByIdAndUpdate(id, seriesData, {
     new: true,

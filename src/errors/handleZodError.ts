@@ -10,10 +10,12 @@ export const handleZodError = (error: ZodError): IGenericErrorResponse => {
     };
   });
 
+  const combinedMessages = errors.map(e => e.message).join(', ');
+
   const statusCode = 400;
   return {
     statusCode,
-    message: 'Validation Error',
+    message: `Validation Error: ${combinedMessages}`,
     errorMessages: errors,
   };
 };

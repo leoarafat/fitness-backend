@@ -12,14 +12,6 @@ const seriesSchema = new Schema<ISeries>(
       type: String,
       required: true,
     },
-    name: {
-      type: String,
-      required: true,
-    },
-    video: {
-      type: String,
-      required: true,
-    },
   },
   {
     timestamps: true,

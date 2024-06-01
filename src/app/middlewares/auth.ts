@@ -4,6 +4,8 @@ import config from '../../config';
 import ApiError from '../../errors/ApiError';
 import httpStatus from 'http-status';
 import { jwtHelpers } from '../../helpers/jwtHelpers';
+import User from '../modules/user/user.model';
+import Admin from '../modules/admin/admin.model';
 
 const auth =
   (...roles: string[]) =>
@@ -28,7 +30,15 @@ const auth =
 
         //set user to headers
         req.user = verifyUser;
-
+        const isExist = await User.findById(verifyUser?.userId);
+        const checkAdmin = await Admin.findById(verifyUser?.userId);
+        if (verifyUser.role === 'user' && !isExist) {
+          throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+        }
+        if (verifyUser.role === 'admin' && !checkAdmin) {
+          throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+        }
+        console.log(checkAdmin);
         //guard user
         if (roles.length && !roles.includes(verifyUser.role)) {
           throw new ApiError(
