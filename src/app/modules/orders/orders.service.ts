@@ -156,7 +156,15 @@ const getAllOrders = async (query: Record<string, any>) => {
     meta,
   };
 };
+const getSingle = async (id: string) => {
+  const isExist = await Order.findById(id);
+  if (!isExist) {
+    throw new ApiError(404, 'Order not found');
+  }
+  return isExist;
+};
 export const OrderService = {
   makeOrder,
   getAllOrders,
+  getSingle,
 };
