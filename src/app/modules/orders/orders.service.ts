@@ -9,6 +9,7 @@ import { Order } from './orders.model';
 import { Products } from '../products/products.model';
 import User from '../user/user.model';
 import { generateTransactionId } from '../../../utils/uniqueId';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
 const clientId = config.paypal.client_id;
 const clientSecret = config.paypal.client_secret;
@@ -18,7 +19,7 @@ if (!clientId || !clientSecret) {
 }
 
 Paypal.configure({
-  mode: 'sandbox', // Change to 'live' for production
+  mode: 'sandbox',
   client_id: clientId,
   client_secret: clientSecret,
 });
@@ -140,7 +141,22 @@ const makeOrder = async (payload: Partial<IOrder>) => {
     throw error;
   }
 };
+const getAllOrders = async (query: Record<string, any>) => {
+  const ordersQuery = new QueryBuilder(Order.find({}), query)
+    .search(['address'])
+    .fields()
+    .filter()
+    .sort()
+    .paginate();
 
+  const result = ordersQuery.modelQuery;
+  const meta = ordersQuery.countTotal;
+  return {
+    data: result,
+    meta,
+  };
+};
 export const OrderService = {
   makeOrder,
+  getAllOrders,
 };
