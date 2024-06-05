@@ -81,22 +81,15 @@ const getAllUsers = async (
   };
 };
 //*
-const getSingleUser = async (id: string): Promise<IUser | null> => {
-  const result = await User.findById(id);
+const getSingleUser = async (user: IReqUser): Promise<IUser | null> => {
+  const result = await User.findById(user?.userId);
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
-  const updatedResult = {
-    ...result.toObject(),
-    profile_image: updateImageUrl(result.profile_image).replace(/\\/g, '/'),
-  };
-  return updatedResult;
+  return result;
 };
 //*
-const updateProfile = async (
-  id: string,
-  req: Request,
-): Promise<IUser | null> => {
+const updateProfile = async (req: Request): Promise<IUser | null> => {
   //@ts-ignore
   const { files } = req;
   const { userId } = req.user as IReqUser;
@@ -109,27 +102,13 @@ const updateProfile = async (
   //@ts-ignore
   if (files?.profile_image?.length) {
     const result = await User.findOneAndUpdate(
-      { _id: id },
+      { _id: userId },
       //@ts-ignore
       {
         //@ts-ignore
-        profile_image: files.profile_image[0].path,
+        profile_image: `/images/profile/${files.profile_image[0].filename}`,
       },
 
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
-
-    return result;
-  }
-  //@ts-ignore
-  else if (files?.cover_image?.length) {
-    const result = await User.findOneAndUpdate(
-      { _id: id },
-      //@ts-ignore
-      { cover_image: files.cover_image[0].path },
       {
         new: true,
         runValidators: true,
@@ -146,7 +125,7 @@ const updateProfile = async (
 
     // const parsedData = JSON.parse(data);
 
-    const isExist = await User.findOne({ _id: id });
+    const isExist = await User.findOne({ _id: userId });
 
     if (!isExist) {
       throw new ApiError(404, 'User not found !');
@@ -156,9 +135,13 @@ const updateProfile = async (
 
     const updatedUserData: Partial<IUser> = { ...UserData };
 
-    const result = await User.findOneAndUpdate({ _id: id }, updatedUserData, {
-      new: true,
-    });
+    const result = await User.findOneAndUpdate(
+      { _id: userId },
+      updatedUserData,
+      {
+        new: true,
+      },
+    );
     return result;
   }
 };
@@ -201,6 +184,8 @@ const loginUser = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
   );
 
   return {
+    //@ts-ignore
+
     accessToken,
     refreshToken,
   };

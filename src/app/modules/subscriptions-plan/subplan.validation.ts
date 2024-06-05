@@ -3,8 +3,8 @@ import { z } from 'zod';
 const post = z.object({
   body: z.object({
     title: z.string({ required_error: 'Title is required' }),
-    price: z.string({ required_error: 'price is required' }),
-    duration: z.string({ required_error: 'duration is required' }),
+    price: z.number({ required_error: 'price is required' }),
+    duration: z.number({ required_error: 'duration is required' }),
   }),
 });
 const update = z.object({

@@ -40,6 +40,7 @@ export type IUser = {
   profile_image: string;
   cover_image: string;
   date_of_birth: Date;
+  designation: string;
   location: string;
   active_status: 'online' | 'offline';
   interests: [string];

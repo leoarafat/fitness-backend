@@ -134,7 +134,7 @@ const getAllAdmin = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const myProfile = catchAsync(async (req: Request, res: Response) => {
-  const result = await AdminService.myProfile(req.params.id);
+  const result = await AdminService.myProfile(req.user as IReqUser);
   sendResponse(res, {
     statusCode: 200,
     success: true,

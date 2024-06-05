@@ -1,7 +1,7 @@
 import { Request, RequestHandler, Response } from 'express';
 import { UserService } from './user.service';
 import sendResponse from '../../../shared/sendResponse';
-import { IUser } from './user.interface';
+import { IReqUser, IUser } from './user.interface';
 import catchAsync from '../../../shared/catchasync';
 import config from '../../../config';
 import {
@@ -46,8 +46,7 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getSingleUser = catchAsync(async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const result = await UserService.getSingleUser(id);
+  const result = await UserService.getSingleUser(req.user as IReqUser);
   sendResponse<IUser>(res, {
     statusCode: 200,
     success: true,
@@ -111,8 +110,7 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const updateProfile = catchAsync(async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const result = await UserService.updateProfile(id, req);
+  const result = await UserService.updateProfile(req);
   sendResponse(res, {
     statusCode: 200,
     success: true,

@@ -38,7 +38,7 @@ const auth =
         if (verifyUser.role === 'admin' && !checkAdmin) {
           throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
         }
-        console.log(checkAdmin);
+
         //guard user
         if (roles.length && !roles.includes(verifyUser.role)) {
           throw new ApiError(

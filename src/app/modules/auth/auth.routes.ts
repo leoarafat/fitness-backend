@@ -44,12 +44,12 @@ router.post('/verify-otp', UserController.checkIsValidForgetActivationCode);
 
 //*IDS Work
 router.get(
-  '/profile/:id',
+  '/profile',
   auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN),
   UserController.getSingleUser,
 );
 router.patch(
-  '/edit-profile/:id',
+  '/edit-profile',
   auth(ENUM_USER_ROLE.USER),
   uploadFile(),
   UserController.updateProfile,
@@ -73,6 +73,11 @@ router.patch(
   '/admin/change-password',
   auth(ENUM_USER_ROLE.ADMIN),
   AdminController.changePassword,
+);
+router.get(
+  '/admin/profile',
+  auth(ENUM_USER_ROLE.ADMIN),
+  AdminController.myProfile,
 );
 router.post(
   '/admin/add-admin',
@@ -104,11 +109,6 @@ router.patch(
   auth(ENUM_USER_ROLE.ADMIN),
   uploadFile(),
   AdminController.updateAdmin,
-);
-router.get(
-  '/admin/me/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
-  AdminController.myProfile,
 );
 
 export const AuthRoutes = router;

@@ -16,7 +16,9 @@ async function main() {
   try {
     await mongoose.connect(config.database_url as string);
     logger.info('DB Connected on Successfully');
-    server.listen(config.port, () => {
+    const port =
+      typeof config.port === 'number' ? config.port : Number(config.port);
+    server.listen(port, config.base_url, () => {
       logger.info(`Example app listening on port ${config.port}`);
     });
   } catch (error) {

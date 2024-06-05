@@ -22,6 +22,7 @@ const createProduct = async (req: Request) => {
   return result;
 };
 
+//!
 const allProducts = async (
   query: Record<string, unknown>,
 ): Promise<IGenericResponse<IProducts[]>> => {
@@ -40,6 +41,8 @@ const allProducts = async (
     data: result,
   };
 };
+//!
+
 const singleProduct = async (id: string) => {
   const result = await Products.findById(id);
   if (!result) {

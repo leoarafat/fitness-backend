@@ -146,21 +146,19 @@ const deleteUser = async (id: string): Promise<IUser | null> => {
 };
 //*
 const login = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
-  const { email, password } = payload;
-
-  const isUserExist = await Admin.isAdminExist(email);
-  const admin = await Admin.findOne({ email }).lean();
+  const isUserExist = await Admin.isAdminExist(payload?.email);
+  const admin = await Admin.findOne({ email: payload?.email });
   //@ts-ignore
-  const { password: omit, ...othersData } = admin;
+
   if (!isUserExist) {
     throw new ApiError(404, 'Admin does not exist');
   }
 
   if (
     isUserExist.password &&
-    !(await Admin.isPasswordMatched(password, isUserExist.password))
+    !(await Admin.isPasswordMatched(payload?.password, isUserExist.password))
   ) {
-    throw new ApiError(402, 'Password is incorrect');
+    throw new ApiError(402, 'Password or email is incorrect');
   }
 
   //create access token & refresh token
@@ -182,6 +180,7 @@ const login = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
     accessToken,
     refreshToken,
     //@ts-ignore
+    yourInfo: admin,
   };
 };
 //*
@@ -309,8 +308,8 @@ const resetPassword = async (
   await Admin.updateOne({ email }, { password }, { new: true });
 };
 //*
-const myProfile = async (id: string) => {
-  const result = await Admin.findById(id);
+const myProfile = async (user: IReqUser) => {
+  const result = await Admin.findById(user?.userId);
   if (!result) {
     throw new ApiError(404, 'Profile not found');
   }
