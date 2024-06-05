@@ -12,6 +12,10 @@ const cartSchema = new Schema(
       ref: 'User',
       required: true,
     },
+    quantity: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

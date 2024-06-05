@@ -7,6 +7,8 @@ import { IReqUser } from '../user/user.interface';
 
 const addToCart = async (req: Request) => {
   const { id } = req.params;
+  const data = req.body;
+
   const { userId } = req.user as IReqUser;
   const findProduct = await Products.findById(id);
   if (!findProduct) {
@@ -16,7 +18,11 @@ const addToCart = async (req: Request) => {
   if (isExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Already added your cart list');
   } else {
-    return await Cart.create({ productId: id, user: userId });
+    return await Cart.create({
+      productId: id,
+      user: userId,
+      quantity: data?.quantity,
+    });
   }
 };
 const myCartLists = async (req: Request) => {
