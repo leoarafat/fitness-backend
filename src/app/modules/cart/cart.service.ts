@@ -27,7 +27,7 @@ const addToCart = async (req: Request) => {
 };
 const myCartLists = async (req: Request) => {
   const { userId } = req.user as IReqUser;
-  return await Cart.find({ user: userId });
+  return await Cart.find({ user: userId }).populate('productId');
 };
 const deleteCart = async (id: string) => {
   const isExist = await Cart.findOne({ productId: id });

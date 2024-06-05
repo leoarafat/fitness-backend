@@ -32,6 +32,11 @@ router.get(
   auth(ENUM_USER_ROLE.USER),
   UserController.userBaseOnGender,
 );
+router.get(
+  '/single-user/:id',
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN),
+  UserController.getSingleUserById,
+);
 router.patch(
   '/change-password',
   auth(ENUM_USER_ROLE.USER),

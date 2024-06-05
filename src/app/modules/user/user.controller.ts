@@ -54,6 +54,15 @@ const getSingleUser = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getSingleUserById = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.getSingleUserById(req.params.id);
+  sendResponse<IUser>(res, {
+    statusCode: 200,
+    success: true,
+    message: 'User retrieved successfully',
+    data: result,
+  });
+});
 const deleteUser = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const result = await UserService.deleteUser(id);
@@ -185,4 +194,5 @@ export const UserController = {
   userBaseOnGender,
   resendActivationCode,
   checkIsValidForgetActivationCode,
+  getSingleUserById,
 };

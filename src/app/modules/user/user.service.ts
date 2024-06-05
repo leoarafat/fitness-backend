@@ -88,6 +88,13 @@ const getSingleUser = async (user: IReqUser): Promise<IUser | null> => {
   }
   return result;
 };
+const getSingleUserById = async (id: string): Promise<IUser | null> => {
+  const result = await User.findById(id);
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  return result;
+};
 //*
 const updateProfile = async (req: Request): Promise<IUser | null> => {
   //@ts-ignore
@@ -419,4 +426,5 @@ export const UserService = {
   userBaseOnGender,
   resendActivationCode,
   checkIsValidForgetActivationCode,
+  getSingleUserById,
 };
