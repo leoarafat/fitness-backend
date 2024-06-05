@@ -10,7 +10,7 @@ export type IClass = {
   date: Date;
   description: string;
   video: string;
-  videoDuration: number;
+  videoDuration: string;
   pdfFile: string;
   docFile: string;
   isRead: boolean;

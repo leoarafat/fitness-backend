@@ -8,11 +8,6 @@ import bodyParser from 'body-parser';
 
 export const app: Application = express();
 
-// app.use(
-//   helmet({
-//     crossOriginResourcePolicy: false,
-//   }),
-// );
 app.use(
   cors({
     origin: [

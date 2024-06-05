@@ -13,4 +13,9 @@ router.post(
   validateRequest(SubscriptionValidation.post),
   SubscriptionController.upgradeSubscription,
 );
+router.get(
+  '/subscribers',
+  auth(ENUM_USER_ROLE.ADMIN),
+  SubscriptionController.AllSubscriber,
+);
 export const SubscriptionRoutes = router;

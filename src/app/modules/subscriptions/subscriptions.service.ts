@@ -4,6 +4,7 @@ import { SubscriptionPlan } from '../subscriptions-plan/subscriptions-plan.model
 import ApiError from '../../../errors/ApiError';
 import { Subscription } from './subscriptions.model';
 import { Payment } from '../payment/payment.model';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
 const upgradeSubscription = async (req: Request) => {
   try {
@@ -39,7 +40,27 @@ const upgradeSubscription = async (req: Request) => {
     throw new Error(error?.message);
   }
 };
+const AllSubscriber = async (query: Record<string, unknown>) => {
+  const orderQuery = new QueryBuilder(
+    Subscription.find().populate('user_id'),
+    query,
+  )
+    .search(['startDate'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await orderQuery.modelQuery;
+  const meta = await orderQuery.countTotal();
+
+  return {
+    meta,
+    data: result,
+  };
+};
 
 export const SubscriptionService = {
   upgradeSubscription,
+  AllSubscriber,
 };

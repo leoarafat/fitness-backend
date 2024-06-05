@@ -33,6 +33,16 @@ const getSingle = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const myOrders = catchAsync(async (req: Request, res: Response) => {
+  const result = await OrderService.myOrders(req);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Order retrieved successful',
+    data: result,
+  });
+});
 const updateOrder = catchAsync(async (req: Request, res: Response) => {
   const result = await OrderService.updateOrder(req);
 
@@ -49,4 +59,5 @@ export const OrderController = {
   getAllOrders,
   getSingle,
   updateOrder,
+  myOrders,
 };

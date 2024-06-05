@@ -6,6 +6,8 @@ import { Classes } from './class.model';
 import { IGenericResponse } from '../../../interfaces/paginations';
 import { IClass } from './class.interface';
 import QueryBuilder from '../../../builder/QueryBuilder';
+import getVideoDurationInSeconds from 'get-video-duration';
+import { formatDuration } from '../../../utils/duration';
 
 const createClass = async (req: Request) => {
   const { ...classData } = req.body as IClass;
@@ -34,11 +36,18 @@ const createClass = async (req: Request) => {
   if (!pdfFile || !docFile || !video) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'All file is required');
   }
+  //@ts-ignore
+  classData.date = classData.date.split('T')[0];
+  //@ts-ignore
+  const duration = await getVideoDurationInSeconds(`${files.video[0].path}`);
+  const formattedDuration = formatDuration(duration);
+
   const result = await Classes.create({
     ...classData,
     pdfFile,
     docFile,
     video,
+    videoDuration: formattedDuration,
   });
   return result;
 };
@@ -132,11 +141,36 @@ const updateClass = async (req: Request) => {
   });
   return updateClass;
 };
+const getReadUnreadAnalytics = async (req: Request) => {
+  const { id } = req.params;
+
+  const classes = await Classes.find({ program: id });
+
+  if (classes.length === 0) {
+    throw new ApiError(404, 'No classes found for the specified program');
+  }
+
+  const totalClasses = classes.length;
+  const readCount = classes.filter(cls => cls.isRead).length;
+  const unreadCount = totalClasses - readCount;
+
+  const readPercentage = (readCount / totalClasses) * 100;
+  const unreadPercentage = (unreadCount / totalClasses) * 100;
+
+  return {
+    totalClasses,
+    readCount,
+    unreadCount,
+    readPercentage: readPercentage.toFixed(2),
+    unreadPercentage: unreadPercentage.toFixed(2),
+  };
+};
 export const ClassService = {
   createClass,
   allClasses,
   singleClass,
   deleteClass,
   updateClass,
+  getReadUnreadAnalytics,
   getClassBySeries,
 };

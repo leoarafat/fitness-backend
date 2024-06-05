@@ -135,6 +135,24 @@ const getSingle = async (id: string) => {
   }
   return isExist;
 };
+const myOrders = async (req: Request) => {
+  const user = req.user as IReqUser;
+  const query = req.query;
+  const orderQuery = new QueryBuilder(Order.find({ user: user?.userId }), query)
+    .search(['address'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await orderQuery.modelQuery;
+  const meta = await orderQuery.countTotal();
+
+  return {
+    meta,
+    data: result,
+  };
+};
 const updateOrder = async (req: Request) => {
   const data = req.body;
   const { id } = req.params;
@@ -153,4 +171,5 @@ export const OrderService = {
   getAllOrders,
   getSingle,
   updateOrder,
+  myOrders,
 };

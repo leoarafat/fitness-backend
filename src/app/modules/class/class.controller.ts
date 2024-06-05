@@ -57,6 +57,17 @@ const updateClass = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getReadUnreadAnalytics = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await ClassService.getReadUnreadAnalytics(req);
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Retrieved successful',
+      data: result,
+    });
+  },
+);
 export const ClassController = {
   createClass,
   allClasses,
@@ -64,4 +75,5 @@ export const ClassController = {
   deleteClass,
   updateClass,
   getClassBySeries,
+  getReadUnreadAnalytics,
 };
