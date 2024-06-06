@@ -276,9 +276,10 @@ const incomeGrowth = async () => {
       },
       { $sort: { '_id.year': 1, '_id.month': 1 } },
     ];
-
+    //@ts-ignore
     const orderAmounts = await Order.aggregate(orderAggregation);
     const subscriptionAmounts = await Subscription.aggregate(
+      //@ts-ignore
       subscriptionAggregation,
     );
 

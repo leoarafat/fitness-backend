@@ -13,6 +13,12 @@ router.post(
   ManageController.addAboutUs,
 );
 router.post(
+  '/add-contact-info',
+  auth(ENUM_USER_ROLE.ADMIN),
+
+  ManageController.addContactInfo,
+);
+router.post(
   '/add-terms-conditions',
   auth(ENUM_USER_ROLE.ADMIN),
   validateRequest(ManageValidation.post),
@@ -31,27 +37,32 @@ router.post(
 );
 router.get(
   '/get-privacy-policy',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   ManageController.getPrivacyPolicy,
 );
 router.get(
   '/get-about-us',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   ManageController.getAboutUs,
 );
 router.get(
   '/get-terms-conditions',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   ManageController.getTermsConditions,
 );
 router.get(
+  '/get-contact-info',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
+  ManageController.getContactInfo,
+);
+router.get(
   '/get-contact-us',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   ManageController.getContactUs,
 );
 router.patch(
   '/edit-privacy-policy/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   ManageController.editPrivacyPolicy,
 );
 router.patch(

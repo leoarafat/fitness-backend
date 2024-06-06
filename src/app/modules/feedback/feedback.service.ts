@@ -10,7 +10,13 @@ const sendFeedBack = async (req: Request) => {
   return await FeedBack.create({ text, user: userId });
 };
 const getFeedback = async (query: Record<string, unknown>) => {
-  const FeedBackQuery = new QueryBuilder(FeedBack.find({}), query)
+  const FeedBackQuery = new QueryBuilder(
+    FeedBack.find({}).populate({
+      path: 'user',
+      select: 'name profile_image email role',
+    }),
+    query,
+  )
     .search(['name', 'email'])
     .filter()
     .sort()

@@ -39,6 +39,15 @@ const addContactUs = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const addContactInfo = catchAsync(async (req: Request, res: Response) => {
+  const result = await ManageService.addContactInfo(req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successful',
+    data: result,
+  });
+});
 const getPrivacyPolicy = catchAsync(async (req: Request, res: Response) => {
   const result = await ManageService.getPrivacyPolicy();
   sendResponse(res, {
@@ -152,6 +161,15 @@ const deleteTermsConditions = catchAsync(
     });
   },
 );
+const getContactInfo = catchAsync(async (req: Request, res: Response) => {
+  const result = await ManageService.getContactInfo();
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successful',
+    data: result,
+  });
+});
 
 export const ManageController = {
   addPrivacyPolicy,
@@ -170,4 +188,6 @@ export const ManageController = {
   deleteContactUs,
   deletePrivacyPolicy,
   deleteTermsConditions,
+  addContactInfo,
+  getContactInfo,
 };

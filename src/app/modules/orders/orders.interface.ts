@@ -12,4 +12,5 @@ export type IOrder = {
   deliveryDate: Date;
   transactionId: string;
   orderStatus: 'pending' | 'deliver' | 'shipped';
+  location: string;
 };

@@ -11,92 +11,6 @@ import { Products } from '../products/products.model';
 import User from '../user/user.model';
 import { IReqUser } from '../user/user.interface';
 
-// const clientId = config.paypal.client_id;
-// const clientSecret = config.paypal.client_secret;
-
-// if (!clientId || !clientSecret) {
-//   throw new Error('PayPal client_id and client_secret must be defined');
-// }
-
-// Paypal.configure({
-//   mode: 'sandbox',
-//   client_id: clientId,
-//   client_secret: clientSecret,
-// });
-
-//!
-// const makeOrder = async (payload: Partial<IOrder>) => {
-//   const session = await mongoose.startSession();
-//   session.startTransaction();
-
-//   try {
-//     const newOrder = new Order({
-//       user: payload.user,
-//       totalAmount: payload.totalAmount,
-//       currency: payload.currency,
-//       status: 'pending',
-//       transactionId: generateTransactionId(),
-//       address: payload.address,
-//       contactNumber: payload.contactNumber,
-//       deliveryDate: payload.deliveryDate,
-//       paymentMethod: payload.paymentMethod,
-//       product: payload.product,
-//       quantity: payload.quantity,
-//       payerId: payload.payerId,
-//     });
-
-//     const savedOrder = await newOrder.save({ session });
-
-//     const create_payment_json = {
-//       intent: 'sale',
-//       payer: {
-//         payment_method: 'paypal',
-//       },
-//       redirect_urls: {
-//         return_url: 'http://localhost:3000/success',
-//         cancel_url: 'http://localhost:3000/cancel',
-//       },
-//       transactions: [
-//         {
-//           amount: {
-//             currency: 'USD',
-//             total: payload.totalAmount,
-//           },
-//           description: 'Nothing',
-//         },
-//       ],
-//     };
-
-//     const paymentResult = await new Promise((resolve, reject) => {
-//       Paypal.payment.create(
-//         create_payment_json as any,
-//         async (error, payment) => {
-//           if (error) {
-//             logger.error(error);
-//             reject(error);
-//           } else {
-//             resolve(payment);
-//           }
-//         },
-//       );
-//     });
-//     //@ts-ignore
-//     savedOrder.transactionId = paymentResult.id;
-//     await savedOrder.save({ session });
-
-//     await session.commitTransaction();
-//     session.endSession();
-
-//     return paymentResult;
-//   } catch (error) {
-//     await session.abortTransaction();
-//     session.endSession();
-//     logger.error('Transaction aborted due to an error: ', error);
-//     throw error;
-//   }
-// };
-//!
-
 const makeOrder = async (req: Request) => {
   const payload = req.body as IOrder;
   const { userId } = req.user as IReqUser;
@@ -139,7 +53,13 @@ const getSingle = async (id: string) => {
 const myOrders = async (req: Request) => {
   const user = req.user as IReqUser;
   const query = req.query;
-  const orderQuery = new QueryBuilder(Order.find({ user: user?.userId }), query)
+  const orderQuery = new QueryBuilder(
+    Order.find({ user: user?.userId }).populate({
+      path: 'product',
+      select: 'productName images price',
+    }),
+    query,
+  )
     .search(['address'])
     .filter()
     .sort()

@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ApiError from '../../../errors/ApiError';
+import { logger } from '../../../shared/logger';
 import {
   AboutUs,
+  ContactInformation,
   ContactUs,
   PrivacyPolicy,
   TermsConditions,
@@ -114,6 +118,33 @@ const deleteContactUs = async (id: string) => {
   return await ContactUs.findByIdAndDelete(id);
 };
 //*
+const addContactInfo = async (payload: any) => {
+  if (!payload) {
+    throw new ApiError(400, 'Please provide data');
+  }
+  return await ContactInformation.create(payload);
+};
+const getContactInfo = async () => {
+  try {
+    const results = await ContactInformation.find({});
+
+    const updatedResult = results.reduce(
+      (acc, res) => {
+        //@ts-ignore
+        acc.email.push(...res.email);
+        //@ts-ignore
+        acc.phone.push(...res.phone);
+        return acc;
+      },
+      { email: [], phone: [] },
+    );
+
+    return [updatedResult];
+  } catch (error) {
+    logger.error('Error fetching contact information:', error);
+    throw error;
+  }
+};
 
 export const ManageService = {
   addPrivacyPolicy,
@@ -132,4 +163,6 @@ export const ManageService = {
   deleteContactUs,
   deletePrivacyPolicy,
   deleteTermsConditions,
+  addContactInfo,
+  getContactInfo,
 };

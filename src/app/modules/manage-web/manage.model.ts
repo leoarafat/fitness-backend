@@ -60,6 +60,24 @@ const contactUsSchema = new mongoose.Schema(
     },
   },
 );
+const contactInformationSchema = new mongoose.Schema(
+  {
+    email: {
+      type: [String],
+      required: true,
+    },
+    phone: {
+      type: [String],
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+    },
+  },
+);
 export const PrivacyPolicy = model('PrivacyPolicy', privacySchema);
 export const AboutUs = model('AboutUs', aboutUsSchema);
 export const TermsConditions = model(
@@ -67,3 +85,7 @@ export const TermsConditions = model(
   termsAndConditionsSchema,
 );
 export const ContactUs = model('ContactUs', contactUsSchema);
+export const ContactInformation = model(
+  'ContactInformation',
+  contactInformationSchema,
+);

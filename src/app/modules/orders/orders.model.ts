@@ -18,10 +18,10 @@ const orderSchema = new Schema<IOrder>(
     //   type: String,
     //   required: true,
     // },
-    // paymentId: {
-    //   type: String,
-    //   required: true,
-    // },
+    location: {
+      type: String,
+      required: true,
+    },
 
     deliveryDate: {
       type: Date,

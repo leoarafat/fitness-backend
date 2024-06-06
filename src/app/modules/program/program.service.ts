@@ -50,60 +50,6 @@ const getAllProgram = async (
 };
 
 //!
-// const singleProgram = async (id: string, query: Record<string, unknown>) => {
-//   const program = await Program.findById(id);
-
-//   if (!program) {
-//     throw new ApiError(httpStatus.NOT_FOUND, 'Program not found');
-//   }
-
-//   const serieses = await Series.find({ program: id });
-
-//   const seriesWithClasses = await Promise.all(
-//     serieses.map(async series => {
-//       const classQuery = new QueryBuilder(
-//         Classes.find({ series: series._id }),
-//         query,
-//       )
-//         .search(['topic', 'title'])
-//         .filter()
-//         .sort()
-//         .paginate()
-//         .fields();
-
-//       const classes = await classQuery.modelQuery;
-//       const totalVideoDuration = classes.reduce(
-//         (acc, currentClass) =>
-//           acc + (parseFloat(currentClass.videoDuration) || 0),
-//         0,
-//       );
-//       return {
-//         ...series.toObject(),
-//         classes,
-//         totalVideoDuration,
-//       };
-//     }),
-//   );
-//   const filteredSeries = seriesWithClasses.filter(
-//     series => series.classes.length > 0,
-//   );
-//   const totalClasses = filteredSeries.reduce(
-//     (acc, series) => acc + series.classes.length,
-//     0,
-//   );
-//   const result = {
-//     program,
-//     series: filteredSeries.length > 0 ? filteredSeries : [],
-//   };
-//   const meta = {
-//     totalSeries: Number(filteredSeries.length),
-//     totalClasses,
-//   };
-//   return {
-//     meta,
-//     data: result,
-//   };
-// };
 const singleProgram = async (id: string, query: Record<string, unknown>) => {
   const program = await Program.findById(id);
 
@@ -138,27 +84,83 @@ const singleProgram = async (id: string, query: Record<string, unknown>) => {
       };
     }),
   );
-
-  const totalClasses = seriesWithClasses.reduce(
+  const filteredSeries = seriesWithClasses.filter(
+    series => series.classes.length > 0,
+  );
+  const totalClasses = filteredSeries.reduce(
     (acc, series) => acc + series.classes.length,
     0,
   );
-
   const result = {
     program,
-    series: seriesWithClasses,
+    series: filteredSeries.length > 0 ? filteredSeries : [],
   };
-
   const meta = {
-    totalSeries: seriesWithClasses.length,
+    totalSeries: Number(filteredSeries.length),
     totalClasses,
   };
-
   return {
     meta,
     data: result,
   };
 };
+//!
+// const singleProgram = async (id: string, query: Record<string, unknown>) => {
+//   const program = await Program.findById(id);
+
+//   if (!program) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'Program not found');
+//   }
+
+//   const serieses = await Series.find({ program: id });
+
+//   const seriesWithClasses = await Promise.all(
+//     serieses.map(async series => {
+//       const classQuery = new QueryBuilder(
+//         Classes.find({ series: series._id }),
+//         query,
+//       )
+//         .search(['topic', 'title'])
+//         .filter()
+//         .sort()
+//         .paginate()
+//         .fields();
+
+//       const classes = await classQuery.modelQuery;
+//       const totalVideoDuration = classes.reduce(
+//         (acc, currentClass) =>
+//           acc + (parseFloat(currentClass.videoDuration) || 0),
+//         0,
+//       );
+//       return {
+//         ...series.toObject(),
+//         classes,
+//         totalVideoDuration,
+//       };
+//     }),
+//   );
+
+//   const totalClasses = seriesWithClasses.reduce(
+//     (acc, series) => acc + series.classes.length,
+//     0,
+//   );
+
+//   const result = {
+//     program,
+//     series: seriesWithClasses,
+//   };
+
+//   const meta = {
+//     totalSeries: seriesWithClasses.length,
+//     totalClasses,
+//   };
+
+//   return {
+//     meta,
+//     data: result,
+//   };
+// };
+//!
 
 const deleteProgram = async (id: string) => {
   const program = await Program.findById(id);
