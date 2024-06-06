@@ -14,14 +14,14 @@ const orderSchema = new Schema<IOrder>(
       required: true,
     },
 
-    transactionId: {
-      type: String,
-      required: true,
-    },
-    paymentId: {
-      type: String,
-      required: true,
-    },
+    // transactionId: {
+    //   type: String,
+    //   required: true,
+    // },
+    // paymentId: {
+    //   type: String,
+    //   required: true,
+    // },
 
     deliveryDate: {
       type: Date,

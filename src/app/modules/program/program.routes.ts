@@ -3,6 +3,7 @@ import { ProgramController } from './program.controller';
 import auth from '../../middlewares/auth';
 import { ENUM_USER_ROLE } from '../../../enums/user';
 import { uploadFile } from '../../middlewares/fileUploader';
+import { ClassController } from '../class/class.controller';
 const router = Router();
 
 router.post(
@@ -13,6 +14,11 @@ router.post(
 );
 router.get('/all', ProgramController.allPrograms);
 router.get('/:id', ProgramController.singleProgram);
+router.get(
+  '/analytics/:id',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
+  ClassController.getReadUnreadAnalytics,
+);
 router.delete(
   '/delete/:id',
   auth(ENUM_USER_ROLE.ADMIN),

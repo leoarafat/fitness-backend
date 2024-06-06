@@ -4,7 +4,7 @@ import { OrderService } from './orders.service';
 import sendResponse from '../../../shared/sendResponse';
 
 const makeOrder = catchAsync(async (req: Request, res: Response) => {
-  const result = await OrderService.makeOrder(req.body);
+  const result = await OrderService.makeOrder(req);
 
   sendResponse(res, {
     statusCode: 200,

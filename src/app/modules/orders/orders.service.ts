@@ -109,6 +109,7 @@ const makeOrder = async (req: Request) => {
   if (!isExistProduct) {
     throw new ApiError(404, 'Product not found');
   }
+  payload.user = userId;
   return await Order.create(payload);
 };
 

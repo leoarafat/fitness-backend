@@ -3,20 +3,16 @@ import { Request } from 'express';
 import { SubscriptionPlan } from '../subscriptions-plan/subscriptions-plan.model';
 import ApiError from '../../../errors/ApiError';
 import { Subscription } from './subscriptions.model';
-import { Payment } from '../payment/payment.model';
 import QueryBuilder from '../../../builder/QueryBuilder';
 
 const upgradeSubscription = async (req: Request) => {
   try {
-    const { planId, transactionId, payment_status, payment_id } = req.body;
+    const { planId, transactionId, payment_status, amount } = req.body;
     const subscriptionPlan = await SubscriptionPlan.findById(planId);
     if (!subscriptionPlan) {
       throw new ApiError(404, 'Plan not found');
     }
-    const isPaid = await Payment.findById(payment_id);
-    if (!isPaid) {
-      throw new ApiError(404, 'Payment not found. Please payment first');
-    }
+
     const startDate = new Date();
     const endDate = new Date(
       startDate.getTime() + subscriptionPlan.duration * 24 * 60 * 60 * 1000,
@@ -25,8 +21,8 @@ const upgradeSubscription = async (req: Request) => {
     const subscription = await Subscription.create({
       plan_id: planId,
       user_id: req?.user?.userId,
-      payment_id,
       payment_status: payment_status,
+      amount,
       startDate,
       endDate,
       transactionId: transactionId,
