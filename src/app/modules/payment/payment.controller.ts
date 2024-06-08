@@ -6,6 +6,8 @@ import sendResponse from '../../../shared/sendResponse';
 const makePaymentIntent = catchAsync(async (req: Request, res: Response) => {
   const result = await PaymentService.makePaymentIntent(req.body);
 
+  console.log(result);
+
   sendResponse(res, {
     statusCode: 200,
     success: true,

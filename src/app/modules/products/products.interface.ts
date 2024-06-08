@@ -1,8 +1,9 @@
 export type IProducts = {
   productName: string;
   gender: 'male' | 'female' | 'baby';
-  date: Date;
-  price: string;
+  date: string;
+  price: number;
   images: [];
   description: string;
+  quantity: number;
 };

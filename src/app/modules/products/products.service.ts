@@ -10,11 +10,13 @@ import { IProducts } from './products.interface';
 
 const createProduct = async (req: Request) => {
   const { ...productData } = req.body;
+
   //@ts-ignore
   const images = req.files.image;
   if (!images) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Image cannot be empty');
   }
+
   const result = await Products.create({
     ...productData,
     images: images?.map((img: any) => `/images/image/${img.filename}`),

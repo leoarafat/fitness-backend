@@ -13,11 +13,15 @@ const productSchema = new Schema<IProducts>(
       required: true,
     },
     date: {
-      type: Date,
+      type: String,
       required: true,
     },
     price: {
-      type: String,
+      type: Number,
+      required: true,
+    },
+    quantity: {
+      type: Number,
       required: true,
     },
     images: {

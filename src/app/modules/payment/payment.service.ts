@@ -14,6 +14,7 @@ const makePaymentIntent = async (payload: { price: number }) => {
     currency: 'usd',
     payment_method_types: ['card'],
   });
+
   const data = {
     client_secret: paymentIntent.client_secret,
     transactionId: paymentIntent.id,
