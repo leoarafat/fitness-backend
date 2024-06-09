@@ -25,7 +25,9 @@ const totalCount = async () => {
 
     const totalEarning =
       totalEarningResult.length > 0 ? totalEarningResult[0].totalEarnings : 0;
-    const newSubscribers = await Subscription.find({}).sort({ createdAt: -1 });
+    const newSubscribers = await Subscription.find({})
+      .sort({ createdAt: -1 })
+      .populate('user_id');
 
     return {
       users,

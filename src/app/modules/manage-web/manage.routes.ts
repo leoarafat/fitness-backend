@@ -37,22 +37,22 @@ router.post(
 );
 router.get(
   '/get-privacy-policy',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
+
   ManageController.getPrivacyPolicy,
 );
 router.get(
   '/get-about-us',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
+
   ManageController.getAboutUs,
 );
 router.get(
   '/get-terms-conditions',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
+
   ManageController.getTermsConditions,
 );
 router.get(
   '/get-contact-info',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
+
   ManageController.getContactInfo,
 );
 router.get(
