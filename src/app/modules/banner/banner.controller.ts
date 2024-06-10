@@ -12,7 +12,17 @@ const addBanner = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getBanner = catchAsync(async (req: Request, res: Response) => {
+  const result = await BannerService.getBanner();
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Retrieved successful',
+    data: result,
+  });
+});
 
 export const BannerController = {
   addBanner,
+  getBanner,
 };

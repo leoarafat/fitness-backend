@@ -5,6 +5,7 @@ import { BannerController } from './banner.controller';
 import { uploadFile } from '../../middlewares/fileUploader';
 
 const router = Router();
+router.get('/', BannerController.getBanner);
 router.post(
   '/add',
   auth(ENUM_USER_ROLE.ADMIN),

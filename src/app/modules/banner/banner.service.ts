@@ -29,7 +29,10 @@ const addBanner = async (req: Request) => {
     title: req.body.title,
   });
 };
-
+const getBanner = async () => {
+  return await Banner.findOne();
+};
 export const BannerService = {
   addBanner,
+  getBanner,
 };
