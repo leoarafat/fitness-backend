@@ -4,6 +4,8 @@ import { SubscriptionPlan } from '../subscriptions-plan/subscriptions-plan.model
 import ApiError from '../../../errors/ApiError';
 import { Subscription } from './subscriptions.model';
 import QueryBuilder from '../../../builder/QueryBuilder';
+import { IReqUser } from '../user/user.interface';
+import User from '../user/user.model';
 
 const upgradeSubscription = async (req: Request) => {
   try {
@@ -55,8 +57,20 @@ const AllSubscriber = async (query: Record<string, unknown>) => {
     data: result,
   };
 };
-
+const mySubscription = async (req: Request) => {
+  const { userId } = req.user as IReqUser;
+  const isExistUser = await User.findById(userId);
+  if (!isExistUser) {
+    throw new ApiError(404, 'User not found');
+  }
+  const subscription = await Subscription.findOne({ user_id: userId });
+  if (!subscription) {
+    return null;
+  }
+  return subscription;
+};
 export const SubscriptionService = {
   upgradeSubscription,
   AllSubscriber,
+  mySubscription,
 };

@@ -18,4 +18,9 @@ router.get(
   auth(ENUM_USER_ROLE.ADMIN),
   SubscriptionController.AllSubscriber,
 );
+router.get(
+  '/my-plan',
+  auth(ENUM_USER_ROLE.USER),
+  SubscriptionController.mySubscription,
+);
 export const SubscriptionRoutes = router;

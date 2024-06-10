@@ -21,8 +21,18 @@ const AllSubscriber = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const mySubscription = catchAsync(async (req: Request, res: Response) => {
+  const result = await SubscriptionService.mySubscription(req);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'My Plan retrieved successful',
+    data: result,
+  });
+});
 
 export const SubscriptionController = {
   upgradeSubscription,
   AllSubscriber,
+  mySubscription,
 };
