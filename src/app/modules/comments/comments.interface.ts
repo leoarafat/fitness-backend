@@ -10,6 +10,8 @@ export type IComments = {
   reply: IReply;
 };
 export type IReply = {
+  [x: string]: any;
   reply: string;
   adminId: Types.ObjectId | IAdmin;
+  commentId: Types.ObjectId | IComments;
 };

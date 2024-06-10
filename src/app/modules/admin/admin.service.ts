@@ -144,6 +144,10 @@ const deleteUser = async (id: string): Promise<IUser | null> => {
   const result = await User.findByIdAndDelete(id);
   return result;
 };
+const deleteAdmin = async (id: string): Promise<IAdmin | null> => {
+  const result = await Admin.findByIdAndDelete(id);
+  return result;
+};
 //*
 const login = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
   const isUserExist = await Admin.isAdminExist(payload?.email);
@@ -330,4 +334,5 @@ export const AdminService = {
   myProfile,
   forgotPass,
   resetPassword,
+  deleteAdmin,
 };

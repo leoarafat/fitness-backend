@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Request } from 'express';
 import { Products } from './products.model';
@@ -7,6 +8,7 @@ import { IGenericResponse } from '../../../interfaces/paginations';
 
 import QueryBuilder from '../../../builder/QueryBuilder';
 import { IProducts } from './products.interface';
+import unlinkFile from '../../../utils/unLink';
 
 const createProduct = async (req: Request) => {
   const { ...productData } = req.body;
@@ -52,6 +54,7 @@ const singleProduct = async (id: string) => {
   }
   return result;
 };
+
 const deleteProduct = async (id: string) => {
   const product = await Products.findById(id);
   if (!product) {
@@ -60,30 +63,40 @@ const deleteProduct = async (id: string) => {
   const result = await Products.findByIdAndDelete(id);
   return result;
 };
-const updateProduct = async (req: Request) => {
-  const { id } = req.params;
-  const product = await Products.findById(id);
-  if (!product) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
+
+const updateProduct = async (id: string, payload: any) => {
+  // console.log(payload);
+  const isExistProduct = await Products.findById(id);
+  if (!isExistProduct) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Product doesn't exist!");
   }
 
-  const { ...productData } = req.body;
+  //filter file
+  const updatedImages = isExistProduct.images.filter(
+    image => !payload?.imageToDelete?.includes(image),
+  );
 
   //@ts-ignore
-  const images = req.files?.image;
-
-  if (images) {
-    productData.images = images.map(
-      (img: any) => `/images/image/${img.filename}`,
-    );
+  if (payload.imageToDelete) {
+    unlinkFile(payload.imageToDelete);
   }
 
-  const updatedProduct = await Products.findByIdAndUpdate(id, productData, {
+  if (payload.productImage.length > 0) {
+    //@ts-ignore
+    updatedImages.push(...payload.productImage);
+  }
+  const updateData = {
+    ...payload,
+    images: updatedImages.length > 0 ? updatedImages : isExistProduct.images,
+  };
+
+  //update product
+  const result = await Products.findOneAndUpdate({ _id: id }, updateData, {
     new: true,
-    runValidators: true,
   });
-  return updatedProduct;
+  return result;
 };
+
 export const ProductService = {
   createProduct,
   allProducts,

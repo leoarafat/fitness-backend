@@ -77,6 +77,16 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const deleteAdmin = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const result = await AdminService.deleteAdmin(id);
+  sendResponse<IAdmin>(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Admin deleted successfully',
+    data: result,
+  });
+});
 const login = catchAsync(async (req: Request, res: Response) => {
   const { ...loginData } = req.body;
   const result = await AdminService.login(loginData);
@@ -175,4 +185,5 @@ export const AdminController = {
   myProfile,
   forgotPass,
   resetPassword,
+  deleteAdmin,
 };
