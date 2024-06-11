@@ -166,37 +166,27 @@ const addWatchList = async (req: Request) => {
 //     unreadPercentage: unreadPercentage.toFixed(2),
 //   };
 // };
-//!
+
 const getReadUnreadAnalytics = async (req: Request) => {
   const { id: programId } = req.params;
   const { userId } = req.user as IReqUser;
 
+  const allClasses = await Classes.find({ program: programId });
+
+  const allClassIds = allClasses.map(cls => cls._id);
+
   const myWatchedClasses = await WatchList.find({
     user: userId,
-    classId: {
-      $in: await Classes.find({ program: programId }).distinct('_id'),
-    },
+    classId: { $in: allClassIds },
   });
 
-  const watchedClassIds = myWatchedClasses.map(watch => watch.classId);
+  const watchedClassIds = myWatchedClasses.map(watch =>
+    watch.classId.toString(),
+  );
 
-  const classes = await Classes.find({
-    _id: { $in: watchedClassIds },
-    program: programId,
-  });
-
-  if (classes.length === 0) {
-    // throw new ApiError(
-    //   404,
-    //   'No classes found for the specified program in your watch list',
-    // );
-    return {
-      message: 'No classes found for the specified program in your watch list',
-    };
-  }
-
-  const totalClasses = classes.length;
-  const readCount = classes.filter(cls => cls.isRead).length;
+  const totalClasses = allClasses.length;
+  const readCount = watchedClassIds.length;
+  const realClasses = myWatchedClasses;
   const unreadCount = totalClasses - readCount;
 
   const readPercentage = (readCount / totalClasses) * 100;
@@ -204,6 +194,7 @@ const getReadUnreadAnalytics = async (req: Request) => {
 
   return {
     totalClasses,
+    realClasses,
     readCount,
     unreadCount,
     readPercentage: readPercentage.toFixed(2),
