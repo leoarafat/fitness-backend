@@ -31,7 +31,7 @@ const allComments = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const singleComment = catchAsync(async (req: Request, res: Response) => {
-  const result = await CommentService.singleComment(req.params.id);
+  const result = await CommentService.singleComment(req);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -40,7 +40,7 @@ const singleComment = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const singleCommentByClass = catchAsync(async (req: Request, res: Response) => {
-  const result = await CommentService.singleCommentByClass(req.params.id);
+  const result = await CommentService.singleCommentByClass(req);
   sendResponse(res, {
     statusCode: 200,
     success: true,

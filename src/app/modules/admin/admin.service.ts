@@ -15,7 +15,6 @@ import {
 } from '../auth/auth.interface';
 import { IRegistration, IReqUser, IUser } from '../user/user.interface';
 import User from '../user/user.model';
-import Admin from './admin.model';
 import httpStatus from 'http-status';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import { IGenericResponse } from '../../../interfaces/paginations';
@@ -139,8 +138,8 @@ const deleteAdmin = async (id: string) => {
 };
 //*
 const login = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
-  const isUserExist = await Admin.isAdminExist(payload?.email);
-  const admin = await Admin.findOne({ email: payload?.email });
+  const isUserExist = await User.isUserExist(payload?.email);
+  const admin = await User.findOne({ email: payload?.email });
   //@ts-ignore
 
   if (!isUserExist) {
@@ -149,7 +148,7 @@ const login = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
 
   if (
     isUserExist.password &&
-    !(await Admin.isPasswordMatched(payload?.password, isUserExist.password))
+    !(await User.isPasswordMatched(payload?.password, isUserExist.password))
   ) {
     throw new ApiError(402, 'Password or email is incorrect');
   }
@@ -194,7 +193,7 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
 
   // checking deleted user's refresh token
 
-  const isUserExist = await Admin.isAdminExist(userId);
+  const isUserExist = await User.isUserExist(userId);
   if (!isUserExist) {
     throw new ApiError(403, 'Admin does not exist');
   }

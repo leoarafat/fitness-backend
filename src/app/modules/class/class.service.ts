@@ -8,6 +8,8 @@ import { IClass } from './class.interface';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import getVideoDurationInSeconds from 'get-video-duration';
 import { formatDuration } from '../../../utils/duration';
+import { IReqUser } from '../user/user.interface';
+import { WatchList } from '../watch-list/watch-list.model';
 
 const createClass = async (req: Request) => {
   const { ...classData } = req.body as IClass;
@@ -70,20 +72,7 @@ const allClasses = async (
     data: result,
   };
 };
-const singleClass = async (id: string) => {
-  const result = await Classes.findById(id);
-  if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Class not found');
-  }
-  const data = await Classes.findByIdAndUpdate(
-    id,
-    { isRead: true },
-    {
-      new: true,
-    },
-  );
-  return data;
-};
+
 const getClassBySeries = async (id: string, query: Record<string, unknown>) => {
   const userQuery = new QueryBuilder(Classes.find({ series: id }), query)
     .search(['topic', 'title'])
@@ -141,13 +130,69 @@ const updateClass = async (req: Request) => {
   });
   return updateClass;
 };
-const getReadUnreadAnalytics = async (req: Request) => {
-  const { id } = req.params;
 
-  const classes = await Classes.find({ program: id });
+const addWatchList = async (req: Request) => {
+  const classId = req.params.id;
+  const { userId } = req.user as IReqUser;
+  return await WatchList.create({
+    user: userId,
+    classId,
+  });
+};
+//!
+// const getReadUnreadAnalytics = async (req: Request) => {
+//   const { id } = req.params;
+
+//   const myWatchedClass = await WatchList.find({ classId: id });
+
+//   const classes = await Classes.find({ program: id });
+
+//   if (classes.length === 0) {
+//     throw new ApiError(404, 'No classes found for the specified program');
+//   }
+
+//   const totalClasses = classes.length;
+//   const readCount = classes.filter(cls => cls.isRead).length;
+//   const unreadCount = totalClasses - readCount;
+
+//   const readPercentage = (readCount / totalClasses) * 100;
+//   const unreadPercentage = (unreadCount / totalClasses) * 100;
+
+//   return {
+//     totalClasses,
+//     readCount,
+//     unreadCount,
+//     readPercentage: readPercentage.toFixed(2),
+//     unreadPercentage: unreadPercentage.toFixed(2),
+//   };
+// };
+//!
+const getReadUnreadAnalytics = async (req: Request) => {
+  const { id: programId } = req.params;
+  const { userId } = req.user as IReqUser;
+
+  const myWatchedClasses = await WatchList.find({
+    user: userId,
+    classId: {
+      $in: await Classes.find({ program: programId }).distinct('_id'),
+    },
+  });
+
+  const watchedClassIds = myWatchedClasses.map(watch => watch.classId);
+
+  const classes = await Classes.find({
+    _id: { $in: watchedClassIds },
+    program: programId,
+  });
 
   if (classes.length === 0) {
-    throw new ApiError(404, 'No classes found for the specified program');
+    // throw new ApiError(
+    //   404,
+    //   'No classes found for the specified program in your watch list',
+    // );
+    return {
+      message: 'No classes found for the specified program in your watch list',
+    };
   }
 
   const totalClasses = classes.length;
@@ -165,10 +210,11 @@ const getReadUnreadAnalytics = async (req: Request) => {
     unreadPercentage: unreadPercentage.toFixed(2),
   };
 };
+
 export const ClassService = {
   createClass,
   allClasses,
-  singleClass,
+  addWatchList,
   deleteClass,
   updateClass,
   getReadUnreadAnalytics,

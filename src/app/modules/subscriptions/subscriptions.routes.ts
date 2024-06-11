@@ -9,7 +9,7 @@ const router = Router();
 
 router.post(
   '/upgrade-plan',
-  auth(ENUM_USER_ROLE.USER),
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN),
   validateRequest(SubscriptionValidation.post),
   SubscriptionController.upgradeSubscription,
 );
@@ -20,7 +20,7 @@ router.get(
 );
 router.get(
   '/my-plan',
-  auth(ENUM_USER_ROLE.USER),
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN),
   SubscriptionController.mySubscription,
 );
 export const SubscriptionRoutes = router;

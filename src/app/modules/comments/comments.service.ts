@@ -59,10 +59,11 @@ const addReply = async (req: Request) => {
 };
 const allComments = async (query: Record<string, unknown>) => {
   const commentQuery = new QueryBuilder(
-    Comment.find().populate({
-      path: 'reply.adminId',
-      select: '_id email name',
-    }),
+    Comment.find(),
+    // .populate({
+    //   path: 'reply.adminId',
+    //   select: '_id email name',
+    // }),
     query,
   )
     .search(['comment'])
@@ -79,19 +80,22 @@ const allComments = async (query: Record<string, unknown>) => {
     data: result,
   };
 };
-const singleComment = async (id: string) => {
+const singleComment = async (req: Request) => {
+  const { id } = req.params;
   return await Comment.findById(id);
 };
-const singleCommentByClass = async (id: string) => {
-  return await Comment.find({ classId: id }).populate([
+const singleCommentByClass = async (req: Request) => {
+  const { userId } = req.user as IReqUser;
+  const { id } = req.params;
+  return await Comment.find({ classId: id, userId }).populate([
     {
       path: 'userId',
       select: 'email _id profile_image',
     },
-    {
-      path: 'reply.adminId',
-      select: 'email _id profile_image',
-    },
+    // {
+    //   path: 'reply.adminId',
+    //   select: 'email _id profile_image',
+    // },
   ]);
 };
 export const CommentService = {

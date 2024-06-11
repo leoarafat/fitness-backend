@@ -21,8 +21,8 @@ const allClasses = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
-const singleClass = catchAsync(async (req: Request, res: Response) => {
-  const result = await ClassService.singleClass(req.params.id);
+const addWatchList = catchAsync(async (req: Request, res: Response) => {
+  const result = await ClassService.addWatchList(req);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -71,7 +71,7 @@ const getReadUnreadAnalytics = catchAsync(
 export const ClassController = {
   createClass,
   allClasses,
-  singleClass,
+  addWatchList,
   deleteClass,
   updateClass,
   getClassBySeries,

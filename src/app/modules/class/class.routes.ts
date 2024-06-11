@@ -19,7 +19,7 @@ router.get(
 router.get(
   '/single/:id',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
-  ClassController.singleClass,
+  ClassController.addWatchList,
 );
 router.get(
   '/by-series/:id',

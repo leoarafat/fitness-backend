@@ -7,7 +7,6 @@ import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import ApiError from '../../../errors/ApiError';
 import httpStatus from 'http-status';
 import { ENUM_USER_ROLE } from '../../../enums/user';
-import Admin from '../admin/admin.model';
 import { sendResetEmail } from './sendResetMails';
 
 //* This is forget password controller
@@ -23,7 +22,7 @@ const forgotPass = async (payload: { email: string }) => {
 
   let profile = null;
   if (user.role === ENUM_USER_ROLE.ADMIN) {
-    profile = await Admin.findOne({ _id: user.id });
+    profile = await User.findOne({ _id: user.id });
   } else if (user.role === ENUM_USER_ROLE.USER) {
     profile = await User.findOne({ _id: user.id });
   }
