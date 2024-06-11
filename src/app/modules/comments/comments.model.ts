@@ -9,7 +9,7 @@ const replySchema = new Schema<IReply>(
     },
     adminId: {
       type: Schema.Types.ObjectId,
-      ref: 'Admin',
+      ref: 'USER',
       required: true,
     },
   },

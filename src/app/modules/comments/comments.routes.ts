@@ -7,15 +7,20 @@ const router = Router();
 
 router.post('/add', auth(ENUM_USER_ROLE.USER), CommentController.addComment);
 router.post('/reply', auth(ENUM_USER_ROLE.ADMIN), CommentController.addReply);
-router.post(
+router.get(
   '/all',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   CommentController.allComments,
 );
-router.post(
+router.get(
   '/single/:id',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
   CommentController.singleComment,
+);
+router.get(
+  '/get/:id',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
+  CommentController.singleCommentByClass,
 );
 
 export const CommentRoutes = router;

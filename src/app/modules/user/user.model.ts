@@ -46,7 +46,7 @@ const UserSchema = new Schema<IUser, UserModel>(
     role: {
       type: String,
       enum: ['ADMIN', 'SUPER_ADMIN', 'USER'],
-      default: 'USER',
+      required: true,
     },
     gender: {
       type: String,

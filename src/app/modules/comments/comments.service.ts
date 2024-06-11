@@ -1,6 +1,5 @@
 import { Request } from 'express';
 import ApiError from '../../../errors/ApiError';
-import Admin from '../admin/admin.model';
 import { Classes } from '../class/class.model';
 import User from '../user/user.model';
 import { IComments, IReply } from './comments.interface';
@@ -13,6 +12,7 @@ const addComment = async (req: Request) => {
   const { userId } = req.user as IReqUser;
 
   const { classId, comment } = payload;
+
   const isExistUser = await User.findById(userId);
 
   if (!isExistUser) {
@@ -37,7 +37,8 @@ const addReply = async (req: Request) => {
     throw new ApiError(400, 'adminId, reply, and commentId are required');
   }
 
-  const isExistAdmin = await Admin.findById(userId);
+  const isExistAdmin = await User.findById(userId);
+
   if (!isExistAdmin) {
     throw new ApiError(404, 'Admin not found');
   }
@@ -57,7 +58,13 @@ const addReply = async (req: Request) => {
   return isExistComment;
 };
 const allComments = async (query: Record<string, unknown>) => {
-  const commentQuery = new QueryBuilder(Comment.find(), query)
+  const commentQuery = new QueryBuilder(
+    Comment.find().populate({
+      path: 'reply.adminId',
+      select: '_id email name',
+    }),
+    query,
+  )
     .search(['comment'])
     .filter()
     .sort()
@@ -75,9 +82,22 @@ const allComments = async (query: Record<string, unknown>) => {
 const singleComment = async (id: string) => {
   return await Comment.findById(id);
 };
+const singleCommentByClass = async (id: string) => {
+  return await Comment.find({ classId: id }).populate([
+    {
+      path: 'userId',
+      select: 'email _id profile_image',
+    },
+    {
+      path: 'reply.adminId',
+      select: 'email _id profile_image',
+    },
+  ]);
+};
 export const CommentService = {
   addComment,
   addReply,
   allComments,
   singleComment,
+  singleCommentByClass,
 };

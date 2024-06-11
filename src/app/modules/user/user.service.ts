@@ -40,6 +40,7 @@ const registrationUser = async (payload: IRegistration) => {
   if (isEmailExist) {
     throw new ApiError(400, 'Email already exists');
   }
+  payload.role = 'USER';
   const newUser = await User.create(payload);
   const data = { user: { name: user.name } };
 
@@ -161,7 +162,6 @@ const deleteUser = async (id: string): Promise<IUser | null> => {
 //*
 const loginUser = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
   const { email, password } = payload;
-
   const isUserExist = await User.isUserExist(email);
 
   if (!isUserExist) {
@@ -192,7 +192,7 @@ const loginUser = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
 
   return {
     //@ts-ignore
-
+    userInfo: isUserExist,
     accessToken,
     refreshToken,
   };

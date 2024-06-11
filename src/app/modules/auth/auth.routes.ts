@@ -86,7 +86,7 @@ router.get(
 );
 router.post(
   '/admin/add-admin',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  // auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   validateRequest(AdminValidation.create),
   AdminController.registrationUser,
 );

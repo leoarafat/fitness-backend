@@ -13,6 +13,7 @@ export type IRegistration = {
   email: string;
   password: string;
   avatar?: string;
+  role: 'ADMIN' | 'USER';
 };
 export type IActivationToken = {
   token: string;

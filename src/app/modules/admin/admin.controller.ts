@@ -8,7 +8,6 @@ import {
   ILoginUserResponse,
   IRefreshTokenResponse,
 } from '../auth/auth.interface';
-import { IAdmin } from './admin.interface';
 
 const registrationUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
@@ -60,7 +59,7 @@ const getSingleUser = catchAsync(async (req: Request, res: Response) => {
 const updateAdmin = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const result = await AdminService.updateAdmin(id, req as any);
-  sendResponse<IAdmin>(res, {
+  sendResponse(res, {
     statusCode: 200,
     success: true,
     message: 'Admin updated successfully',
@@ -80,7 +79,7 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
 const deleteAdmin = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const result = await AdminService.deleteAdmin(id);
-  sendResponse<IAdmin>(res, {
+  sendResponse(res, {
     statusCode: 200,
     success: true,
     message: 'Admin deleted successfully',

@@ -35,11 +35,12 @@ const registrationUser = async (payload: IRegistration) => {
     email,
     password,
   };
-  const isEmailExist = await Admin.findOne({ email });
+  const isEmailExist = await User.findOne({ email });
   if (isEmailExist) {
     throw new ApiError(400, 'Email already exist');
   }
-  const newUser = await Admin.create(payload);
+  payload.role = 'ADMIN';
+  const newUser = await User.create(payload);
   const data = { user: { name: user.name } };
   sendEmail({
     email: user.email,
@@ -61,7 +62,7 @@ const createUser = async (userData: IUser): Promise<IUser | null> => {
 const getAllUsers = async (
   query: Record<string, unknown>,
 ): Promise<IGenericResponse<IUser[]>> => {
-  const userQuery = new QueryBuilder(User.find(), query)
+  const userQuery = new QueryBuilder(User.find({ role: 'USER' }), query)
     .search(['name', 'email'])
     .filter()
     .sort()
@@ -85,24 +86,12 @@ const getSingleUser = async (id: string): Promise<IUser | null> => {
   return result;
 };
 const getAllAdmin = async () => {
-  const results = await Admin.find({}).lean();
-  const updatedResults = results.map(result => {
-    if (result) {
-      const updatedResult = {
-        ...result,
-        profile_image: updateImageUrl(result.profile_image).replace(/\\/g, '/'),
-      };
-      return updatedResult;
-    }
-    return result;
-  });
-  return updatedResults;
+  const results = await User.find({ role: 'ADMIN' }).lean();
+
+  return results;
 };
 //*
-const updateAdmin = async (
-  id: string,
-  req: Request,
-): Promise<IAdmin | null> => {
+const updateAdmin = async (id: string, req: Request) => {
   //@ts-ignore
   const { files } = req;
 
@@ -120,17 +109,17 @@ const updateAdmin = async (
     throw new Error('Data is missing in the request body!');
   }
 
-  const isExist = await Admin.findOne({ _id: id });
+  const isExist = await User.findOne({ _id: id });
 
   if (!isExist) {
-    throw new ApiError(404, 'Admin not found !');
+    throw new ApiError(404, 'User not found !');
   }
 
   const { ...adminData } = data;
   //@ts-ignore
   const updatedAdminData: Partial<IAdmin> = { ...adminData };
 
-  const result = await Admin.findOneAndUpdate(
+  const result = await User.findOneAndUpdate(
     { _id: id },
     { profile_image, ...updatedAdminData },
     {
@@ -144,8 +133,8 @@ const deleteUser = async (id: string): Promise<IUser | null> => {
   const result = await User.findByIdAndDelete(id);
   return result;
 };
-const deleteAdmin = async (id: string): Promise<IAdmin | null> => {
-  const result = await Admin.findByIdAndDelete(id);
+const deleteAdmin = async (id: string) => {
+  const result = await User.findByIdAndDelete(id);
   return result;
 };
 //*
@@ -231,7 +220,7 @@ const changePassword = async (
 ): Promise<void> => {
   const { oldPassword, newPassword } = payload;
 
-  const isAdminExist = await Admin.findOne({ _id: user?.userId }).select(
+  const isAdminExist = await User.findOne({ _id: user?.userId }).select(
     '+password',
   );
 
@@ -240,7 +229,7 @@ const changePassword = async (
   }
   if (
     isAdminExist.password &&
-    !(await Admin.isPasswordMatched(oldPassword, isAdminExist.password))
+    !(await User.isPasswordMatched(oldPassword, isAdminExist.password))
   ) {
     throw new ApiError(402, 'Old password is incorrect');
   }
@@ -249,7 +238,7 @@ const changePassword = async (
 };
 //*
 const forgotPass = async (payload: { email: string }) => {
-  const admin = await Admin.findOne(
+  const admin = await User.findOne(
     { email: payload.email },
     { _id: 1, role: 1 },
   );
@@ -260,7 +249,7 @@ const forgotPass = async (payload: { email: string }) => {
 
   let profile = null;
   if (admin.role === ENUM_USER_ROLE.ADMIN) {
-    profile = await Admin.findOne({ _id: admin?._id });
+    profile = await User.findOne({ _id: admin?._id });
   }
 
   if (!profile) {
@@ -296,10 +285,10 @@ const resetPassword = async (
   token: string,
 ) => {
   const { email, newPassword } = payload;
-  const admin = await Admin.findOne({ email }, { _id: 1 });
+  const admin = await User.findOne({ email }, { _id: 1 });
 
   if (!admin) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'admin not found!');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User not found!');
   }
 
   await jwtHelpers.verifyToken(token, config.jwt.secret as string);
@@ -309,11 +298,11 @@ const resetPassword = async (
     Number(config.bcrypt_salt_rounds),
   );
 
-  await Admin.updateOne({ email }, { password }, { new: true });
+  await User.updateOne({ email }, { password }, { new: true });
 };
 //*
 const myProfile = async (user: IReqUser) => {
-  const result = await Admin.findById(user?.userId);
+  const result = await User.findById(user?.userId);
   if (!result) {
     throw new ApiError(404, 'Profile not found');
   }

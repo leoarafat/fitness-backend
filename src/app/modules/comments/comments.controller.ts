@@ -39,10 +39,20 @@ const singleComment = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const singleCommentByClass = catchAsync(async (req: Request, res: Response) => {
+  const result = await CommentService.singleCommentByClass(req.params.id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Comment Retrieved successful',
+    data: result,
+  });
+});
 
 export const CommentController = {
   addComment,
   addReply,
   allComments,
   singleComment,
+  singleCommentByClass,
 };
