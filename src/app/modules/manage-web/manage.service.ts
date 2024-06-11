@@ -12,7 +12,16 @@ import {
 
 //*
 const addPrivacyPolicy = async (payload: any) => {
-  return await PrivacyPolicy.create(payload);
+  const checkIsExist = await PrivacyPolicy.findOne();
+  if (checkIsExist) {
+    await PrivacyPolicy.findOneAndUpdate({}, payload, {
+      new: true,
+
+      runValidators: true,
+    });
+  } else {
+    return await PrivacyPolicy.create(payload);
+  }
 };
 const getPrivacyPolicy = async () => {
   return await PrivacyPolicy.find({});
@@ -40,7 +49,16 @@ const deletePrivacyPolicy = async (id: string) => {
 };
 //*
 const addAboutUs = async (payload: any) => {
-  return await AboutUs.create(payload);
+  const checkIsExist = await AboutUs.findOne();
+  if (checkIsExist) {
+    await AboutUs.findOneAndUpdate({}, payload, {
+      new: true,
+
+      runValidators: true,
+    });
+  } else {
+    return await AboutUs.create(payload);
+  }
 };
 const getAboutUs = async () => {
   return await AboutUs.find({});
@@ -65,7 +83,16 @@ const deleteAboutUs = async (id: string) => {
 };
 //*
 const addTermsConditions = async (payload: any) => {
-  return await TermsConditions.create(payload);
+  const checkIsExist = await TermsConditions.findOne();
+  if (checkIsExist) {
+    await TermsConditions.findOneAndUpdate({}, payload, {
+      new: true,
+
+      runValidators: true,
+    });
+  } else {
+    return await TermsConditions.create(payload);
+  }
 };
 const getTermsConditions = async () => {
   return await TermsConditions.find({});
