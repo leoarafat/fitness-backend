@@ -85,18 +85,41 @@ const singleComment = async (req: Request) => {
   return await Comment.findById(id);
 };
 const singleCommentByClass = async (req: Request) => {
-  const { userId } = req.user as IReqUser;
+  const limit = req.query.limit;
   const { id } = req.params;
-  return await Comment.find({ classId: id, userId }).populate([
-    {
-      path: 'userId',
-      select: 'email _id profile_image',
-    },
-    // {
-    //   path: 'reply.adminId',
-    //   select: 'email _id profile_image',
-    // },
-  ]);
+  // const totalCommentInClass = await Comment.find({ classId: id });
+  const { userId, role } = req.user as IReqUser;
+
+  if (role === 'USER') {
+    const result = await Comment.find({ classId: id, userId })
+      .populate([
+        {
+          path: 'userId',
+          select: 'email _id profile_image',
+        },
+      ])
+      .limit(Number(limit));
+    const totalComment = await Comment.find({ classId: id, userId });
+    return {
+      comments: result,
+      totalComment: totalComment?.length,
+    };
+  }
+  if (role === 'ADMIN') {
+    const result = await Comment.find({ classId: id })
+      .populate([
+        {
+          path: 'userId',
+          select: 'email _id profile_image',
+        },
+      ])
+      .limit(Number(limit));
+    const totalComment = await Comment.find({ classId: id });
+    return {
+      comments: result,
+      totalComment: totalComment?.length,
+    };
+  }
 };
 export const CommentService = {
   addComment,

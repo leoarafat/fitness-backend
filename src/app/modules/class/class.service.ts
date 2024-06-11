@@ -133,9 +133,11 @@ const updateClass = async (req: Request) => {
 
 const addWatchList = async (req: Request) => {
   const classId = req.params.id;
-  const isExistClass = await WatchList.findOne({ classId });
+  const { userId } = req.user as IReqUser;
+
+  const isExistClass = await WatchList.findOne({ classId, user: userId });
+
   if (!isExistClass) {
-    const { userId } = req.user as IReqUser;
     return await WatchList.create({
       user: userId,
       classId,
