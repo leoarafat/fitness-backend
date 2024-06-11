@@ -5,6 +5,7 @@ import Blog from './blog.model';
 import ApiError from '../../../errors/ApiError';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import httpStatus from 'http-status';
+import unlinkFile from '../../../utils/unLink';
 
 //*
 const addBlog = async (user: IReqUser, req: Request) => {
@@ -56,29 +57,61 @@ const deleteBlog = async (id: string) => {
   return await Blog.findByIdAndDelete(id);
 };
 //*
-const updateBlog = async (req: Request) => {
-  const id = req.params.id;
-  const blog = await Blog.findById(id);
-  if (!blog) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'blog not found');
+// const updateBlog = async (req: Request) => {
+//   const id = req.params.id;
+//   const blog = await Blog.findById(id);
+//   if (!blog) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'blog not found');
+//   }
+
+//   const { ...blogData } = req.body;
+
+//   //@ts-ignore
+//   const images = req.files?.image;
+
+//   if (images) {
+//     blogData.images = images.map((img: any) => `/images/image/${img.filename}`);
+//   }
+
+//   const updatedBlog = await Blog.findByIdAndUpdate(id, blogData, {
+//     new: true,
+//     runValidators: true,
+//   });
+//   return updatedBlog;
+// };
+//*
+const updateBlog = async (id: string, payload: any) => {
+  // console.log(payload);
+  const isExistBlog = await Blog.findById(id);
+  if (!isExistBlog) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Blog doesn't exist!");
   }
 
-  const { ...blogData } = req.body;
+  //filter file
+  const updatedImages = isExistBlog.images.filter(
+    image => !payload?.imageToDelete?.includes(image),
+  );
 
   //@ts-ignore
-  const images = req.files?.image;
-
-  if (images) {
-    blogData.images = images.map((img: any) => `/images/image/${img.filename}`);
+  if (payload.imageToDelete) {
+    unlinkFile(payload.imageToDelete);
   }
 
-  const updatedBlog = await Blog.findByIdAndUpdate(id, blogData, {
-    new: true,
-    runValidators: true,
-  });
-  return updatedBlog;
-};
+  if (payload.blogImage.length > 0) {
+    //@ts-ignore
+    updatedImages.push(...payload.blogImage);
+  }
+  const updateData = {
+    ...payload,
+    images: updatedImages.length > 0 ? updatedImages : isExistBlog.images,
+  };
 
+  //update product
+  const result = await Blog.findOneAndUpdate({ _id: id }, updateData, {
+    new: true,
+  });
+  return result;
+};
 export const BlogService = {
   addBlog,
   getBlogs,
