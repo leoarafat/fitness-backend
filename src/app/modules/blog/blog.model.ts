@@ -5,7 +5,7 @@ const blogSchema = new Schema<IBlog>(
   {
     created_by: {
       type: Schema.Types.ObjectId,
-      ref: 'Admin',
+      ref: 'User',
       required: true,
     },
     topic: {

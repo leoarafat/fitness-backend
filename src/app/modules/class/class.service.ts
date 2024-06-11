@@ -133,11 +133,16 @@ const updateClass = async (req: Request) => {
 
 const addWatchList = async (req: Request) => {
   const classId = req.params.id;
-  const { userId } = req.user as IReqUser;
-  return await WatchList.create({
-    user: userId,
-    classId,
-  });
+  const isExistClass = await WatchList.findOne({ classId });
+  if (!isExistClass) {
+    const { userId } = req.user as IReqUser;
+    return await WatchList.create({
+      user: userId,
+      classId,
+    });
+  } else {
+    return null;
+  }
 };
 //!
 // const getReadUnreadAnalytics = async (req: Request) => {
@@ -186,7 +191,7 @@ const getReadUnreadAnalytics = async (req: Request) => {
 
   const totalClasses = allClasses.length;
   const readCount = watchedClassIds.length;
-  const realClasses = myWatchedClasses;
+  const realClasses = watchedClassIds;
   const unreadCount = totalClasses - readCount;
 
   const readPercentage = (readCount / totalClasses) * 100;
