@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import ApiError from '../../../errors/ApiError';
+import { logger } from '../../../shared/logger';
 
 import {
   ISubscriptionPlan,
@@ -54,30 +55,53 @@ const updateSubscriptionsTitle = async (id: string, payload: any) => {
     );
     return result;
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     //@ts-ignore
     throw new Error(error?.message);
   }
 };
+
+// const updateSubscriptionsItem = async (id: string, payload: any) => {
+//   const isExistSubscriptionPlan = await SubscriptionPlan.findById(id);
+//   if (!isExistSubscriptionPlan) {
+//     throw new ApiError(404, 'Subscription not found');
+//   }
+
+//   // const subs = await SubscriptionPlan.findOne({ 'items._id': id });
+
+//   // if (!subs) {
+//   //   throw new ApiError(404, 'Item not found');
+//   // }
+
+//   // const result = await SubscriptionPlan.findOneAndUpdate(
+//   //   { 'items._id': id },
+//   //   { $set: { 'items.$.title': payload.title } },
+//   //   { new: true },
+//   // );
+//   // return result;
+// };
 const updateSubscriptionsItem = async (id: string, payload: any) => {
-  try {
-    const subs = await SubscriptionPlan.findOne({ 'items._id': id });
+  const { SubscriptionData } = payload;
+  const isExistSubscriptionPlan = await SubscriptionPlan.findById(id);
 
-    if (!subs) {
-      throw new ApiError(404, 'Item not found');
-    }
-
-    const result = await SubscriptionPlan.findOneAndUpdate(
-      { 'items._id': id },
-      { $set: { 'items.$.title': payload.title } },
-      { new: true },
-    );
-    return result;
-  } catch (error) {
-    console.error(error);
-    //@ts-ignore
-    throw new Error(error?.message);
+  if (!isExistSubscriptionPlan) {
+    throw new ApiError(404, 'Subscription not found');
   }
+
+  isExistSubscriptionPlan.title = SubscriptionData.title;
+  isExistSubscriptionPlan.price = SubscriptionData.price;
+  // isExistSubscriptionPlan.duration = SubscriptionData.duration;
+
+  const updatedItems = SubscriptionData.items.map((item: any) => ({
+    title: item.title,
+    _id: item._id || undefined,
+  }));
+
+  isExistSubscriptionPlan.items = updatedItems;
+
+  await isExistSubscriptionPlan.save();
+
+  return isExistSubscriptionPlan;
 };
 
 const deleteSubscriptionsTitle = async (id: string) => {

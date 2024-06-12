@@ -48,11 +48,7 @@ router.post('/resend', UserController.resendActivationCode);
 router.post('/verify-otp', UserController.checkIsValidForgetActivationCode);
 
 //*IDS Work
-router.get(
-  '/profile',
-  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN),
-  UserController.getSingleUser,
-);
+router.get('/profile', auth(ENUM_USER_ROLE.USER), UserController.getSingleUser);
 router.patch(
   '/edit-profile',
   auth(ENUM_USER_ROLE.USER),

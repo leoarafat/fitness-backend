@@ -6,6 +6,7 @@ import {
   AboutUs,
   ContactInformation,
   ContactUs,
+  FAQ,
   PrivacyPolicy,
   TermsConditions,
 } from './manage.model';
@@ -61,7 +62,7 @@ const addAboutUs = async (payload: any) => {
   }
 };
 const getAboutUs = async () => {
-  return await AboutUs.find({});
+  return await AboutUs.findOne({});
 };
 const editAboutUs = async (id: string, payload: { description: string }) => {
   const isExist = await AboutUs.findById(id);
@@ -80,6 +81,34 @@ const deleteAboutUs = async (id: string) => {
     throw new ApiError(404, 'AboutUs not found');
   }
   return await AboutUs.findByIdAndDelete(id);
+};
+//*
+const addFAQ = async (payload: any) => {
+  return await FAQ.create(payload);
+};
+const getFAQ = async () => {
+  return await FAQ.find({});
+};
+const editFAQ = async (
+  id: string,
+  payload: { question: string; answer: string },
+) => {
+  const isExist = await FAQ.findById(id);
+  if (!isExist) {
+    throw new ApiError(404, 'Faq not found');
+  }
+  const result = await FAQ.findOneAndUpdate({ _id: id }, payload, {
+    new: true,
+    runValidators: true,
+  });
+  return result;
+};
+const deleteFAQ = async (id: string) => {
+  const isExist = await FAQ.findById(id);
+  if (!isExist) {
+    throw new ApiError(404, 'Faq not found');
+  }
+  return await FAQ.findByIdAndDelete(id);
 };
 //*
 const addTermsConditions = async (payload: any) => {
@@ -157,10 +186,14 @@ const getContactInfo = async () => {
 
     const updatedResult = results.reduce(
       (acc, res) => {
-        //@ts-ignore
-        acc.email.push(...res.email);
-        //@ts-ignore
-        acc.phone.push(...res.phone);
+        res.email.forEach(email => {
+          //@ts-ignore
+          acc.email.push({ id: res._id, email });
+        });
+        res.phone.forEach(phone => {
+          //@ts-ignore
+          acc.phone.push({ id: res._id, phone });
+        });
         return acc;
       },
       { email: [], phone: [] },
@@ -192,4 +225,8 @@ export const ManageService = {
   deleteTermsConditions,
   addContactInfo,
   getContactInfo,
+  addFAQ,
+  getFAQ,
+  editFAQ,
+  deleteFAQ,
 };

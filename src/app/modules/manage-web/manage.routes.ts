@@ -35,6 +35,12 @@ router.post(
   validateRequest(ManageValidation.post),
   ManageController.addPrivacyPolicy,
 );
+router.post('/add-faq', auth(ENUM_USER_ROLE.ADMIN), ManageController.addFAQ);
+router.get(
+  '/get-faq',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
+  ManageController.getFAQ,
+);
 router.get(
   '/get-privacy-policy',
 
@@ -80,6 +86,11 @@ router.patch(
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.editContactUs,
 );
+router.patch(
+  '/edit-faq/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  ManageController.editFAQ,
+);
 router.delete(
   '/delete-about-us/:id',
   auth(ENUM_USER_ROLE.ADMIN),
@@ -99,5 +110,10 @@ router.delete(
   '/delete-terms-conditions/:id',
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.deleteTermsConditions,
+);
+router.delete(
+  '/delete-faq/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  ManageController.deleteFAQ,
 );
 export const ManageRoutes = router;

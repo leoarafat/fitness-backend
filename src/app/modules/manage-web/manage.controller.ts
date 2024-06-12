@@ -170,7 +170,42 @@ const getContactInfo = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
-
+const addFAQ = catchAsync(async (req: Request, res: Response) => {
+  const result = await ManageService.addFAQ(req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successful',
+    data: result,
+  });
+});
+const getFAQ = catchAsync(async (req: Request, res: Response) => {
+  const result = await ManageService.getFAQ();
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successful',
+    data: result,
+  });
+});
+const editFAQ = catchAsync(async (req: Request, res: Response) => {
+  const result = await ManageService.editFAQ(req.params.id, req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successful',
+    data: result,
+  });
+});
+const deleteFAQ = catchAsync(async (req: Request, res: Response) => {
+  const result = await ManageService.deleteFAQ(req.params.id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successful',
+    data: result,
+  });
+});
 export const ManageController = {
   addPrivacyPolicy,
   addAboutUs,
@@ -190,4 +225,8 @@ export const ManageController = {
   deleteTermsConditions,
   addContactInfo,
   getContactInfo,
+  addFAQ,
+  getFAQ,
+  editFAQ,
+  deleteFAQ,
 };

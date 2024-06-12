@@ -78,6 +78,24 @@ const contactInformationSchema = new mongoose.Schema(
     },
   },
 );
+const faqSchema = new mongoose.Schema(
+  {
+    question: {
+      type: String,
+      required: true,
+    },
+    answer: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+    },
+  },
+);
 export const PrivacyPolicy = model('PrivacyPolicy', privacySchema);
 export const AboutUs = model('AboutUs', aboutUsSchema);
 export const TermsConditions = model(
@@ -89,3 +107,4 @@ export const ContactInformation = model(
   'ContactInformation',
   contactInformationSchema,
 );
+export const FAQ = model('FAQ', faqSchema);
