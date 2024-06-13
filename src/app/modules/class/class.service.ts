@@ -15,6 +15,7 @@ const createClass = async (req: Request) => {
   const { ...classData } = req.body as IClass;
 
   const { files } = req;
+
   let pdfFile = undefined;
   //@ts-ignore
   if (files?.pdf) {

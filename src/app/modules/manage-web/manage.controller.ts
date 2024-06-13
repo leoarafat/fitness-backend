@@ -114,6 +114,15 @@ const editTermsConditions = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const updateContactInfo = catchAsync(async (req: Request, res: Response) => {
+  const result = await ManageService.updateContactInfo(req);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successful',
+    data: result,
+  });
+});
 const editContactUs = catchAsync(async (req: Request, res: Response) => {
   const result = await ManageService.editContactUs(req.params.id, req.body);
   sendResponse(res, {
@@ -229,4 +238,5 @@ export const ManageController = {
   getFAQ,
   editFAQ,
   deleteFAQ,
+  updateContactInfo,
 };

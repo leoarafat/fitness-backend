@@ -14,6 +14,16 @@ router.get(
   DashboardController.totalIncomes,
 );
 router.get(
+  '/subscription-income-details',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  DashboardController.subscriptionUserDetails,
+);
+router.get(
+  '/ecommerce-income-details',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  DashboardController.ecommerceUserDetails,
+);
+router.get(
   '/subscription-growth',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   DashboardController.getMonthlySubscriptionGrowth,

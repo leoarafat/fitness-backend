@@ -23,12 +23,25 @@ const makeOrder = async (req: Request) => {
   if (!isExistProduct) {
     throw new ApiError(404, 'Product not found');
   }
+  //@ts-ignore
   payload.user = userId;
   return await Order.create(payload);
 };
 
 const getAllOrders = async (query: Record<string, any>) => {
-  const orderQuery = new QueryBuilder(Order.find(), query)
+  const orderQuery = new QueryBuilder(
+    Order.find().populate([
+      {
+        path: 'user',
+        select: 'name email',
+      },
+      {
+        path: 'product',
+        select: 'productName gender price',
+      },
+    ]),
+    query,
+  )
     .search(['address'])
     .filter()
     .sort()

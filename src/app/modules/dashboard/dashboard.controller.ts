@@ -56,6 +56,26 @@ const incomeGrowth = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const subscriptionUserDetails = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await DashboardService.subscriptionUserDetails();
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Data retrieved successful',
+      data: result,
+    });
+  },
+);
+const ecommerceUserDetails = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashboardService.ecommerceUserDetails();
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Data retrieved successful',
+    data: result,
+  });
+});
 
 export const DashboardController = {
   totalCount,
@@ -63,4 +83,6 @@ export const DashboardController = {
   getMonthlyUserGrowth,
   totalIncomes,
   incomeGrowth,
+  subscriptionUserDetails,
+  ecommerceUserDetails,
 };

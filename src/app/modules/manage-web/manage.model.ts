@@ -62,14 +62,22 @@ const contactUsSchema = new mongoose.Schema(
 );
 const contactInformationSchema = new mongoose.Schema(
   {
-    email: {
-      type: [String],
-      required: true,
-    },
-    phone: {
-      type: [String],
-      required: true,
-    },
+    email: [
+      {
+        email: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+    number: [
+      {
+        number: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
   },
   {
     timestamps: true,
@@ -78,6 +86,7 @@ const contactInformationSchema = new mongoose.Schema(
     },
   },
 );
+
 const faqSchema = new mongoose.Schema(
   {
     question: {

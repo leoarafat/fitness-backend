@@ -91,6 +91,11 @@ router.patch(
   auth(ENUM_USER_ROLE.ADMIN),
   ManageController.editFAQ,
 );
+router.patch(
+  '/edit-contact-info/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  ManageController.updateContactInfo,
+);
 router.delete(
   '/delete-about-us/:id',
   auth(ENUM_USER_ROLE.ADMIN),

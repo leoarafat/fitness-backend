@@ -4,7 +4,6 @@ import { logger } from '../../../shared/logger';
 import { Order } from '../orders/orders.model';
 import { Subscription } from '../subscriptions/subscriptions.model';
 import User from '../user/user.model';
-import { getMonthName } from './Month';
 
 const totalCount = async () => {
   try {
@@ -167,6 +166,7 @@ const totalIncomes = async () => {
       },
     },
   ]);
+
   const totalEarnings =
     totalEcommerce.length > 0 ? totalEcommerce[0].totalEarnings : 0;
   const totalIncome = totalEarning + totalEarnings;
@@ -176,80 +176,11 @@ const totalIncomes = async () => {
     totalIncome,
   };
 };
-// const incomeGrowth = async () => {
-//   const last12Months = new Date();
-//   last12Months.setMonth(last12Months.getMonth() - 12);
-
-//   const orderAggregation = [
-//     { $match: { createdAt: { $gte: last12Months } } },
-//     {
-//       $group: {
-//         _id: { year: { $year: '$createdAt' }, month: { $month: '$createdAt' } },
-//         totalAmount: { $sum: '$totalAmount' },
-//       },
-//     },
-//     { $sort: { '_id.year': 1, '_id.month': 1 } },
-//   ];
-
-//   const subscriptionAggregation = [
-//     { $match: { createdAt: { $gte: last12Months } } },
-//     {
-//       $group: {
-//         _id: { year: { $year: '$createdAt' }, month: { $month: '$createdAt' } },
-//         totalAmount: { $sum: '$amount' },
-//       },
-//     },
-//     { $sort: { '_id.year': 1, '_id.month': 1 } },
-//   ];
-//   //@ts-ignore
-//   const orderAmounts = await Order.aggregate(orderAggregation);
-
-//   const subscriptionAmounts = await Subscription.aggregate(
-//     //@ts-ignore
-//     subscriptionAggregation,
-//   );
-
-//   const combinedAmounts = {};
-
-//   orderAmounts.forEach(order => {
-//     const key = `${order._id.year}-${order._id.month}`;
-//     //@ts-ignore
-//     if (!combinedAmounts[key]) {
-//       //@ts-ignore
-//       combinedAmounts[key] = 0;
-//     }
-//     //@ts-ignore
-//     combinedAmounts[key] += order.totalAmount;
-//   });
-
-//   subscriptionAmounts.forEach(subscription => {
-//     const key = `${subscription._id.year}-${subscription._id.month}`;
-//     //@ts-ignore
-//     if (!combinedAmounts[key]) {
-//       //@ts-ignore
-//       combinedAmounts[key] = 0;
-//     }
-//     //@ts-ignore
-//     combinedAmounts[key] += subscription.totalAmount;
-//   });
-
-//   const result = Object.keys(combinedAmounts).map(key => {
-//     const [year, month] = key.split('-');
-//     return {
-//       year: parseInt(year),
-//       month: parseInt(month),
-//       //@ts-ignore
-//       totalAmount: combinedAmounts[key],
-//     };
-//   });
-
-//   return result;
-// };
 
 const incomeGrowth = async () => {
   try {
-    const last12Months = new Date();
-    last12Months.setMonth(last12Months.getMonth() - 12);
+    const now = new Date();
+    const last12Months = new Date(now.getFullYear(), 0, 1);
 
     const orderAggregation = [
       { $match: { createdAt: { $gte: last12Months } } },
@@ -278,6 +209,7 @@ const incomeGrowth = async () => {
       },
       { $sort: { '_id.year': 1, '_id.month': 1 } },
     ];
+
     //@ts-ignore
     const orderAmounts = await Order.aggregate(orderAggregation);
     const subscriptionAmounts = await Subscription.aggregate(
@@ -285,26 +217,86 @@ const incomeGrowth = async () => {
       subscriptionAggregation,
     );
 
-    const analytics = orderAmounts.map(order => {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
+    const allMonths = [];
+    for (let i = 0; i < 12; i++) {
+      const date = new Date(now.getFullYear(), i, 1);
+      allMonths.push({
+        year: date.getFullYear(),
+        month: i + 1,
+        monthName: months[i],
+      });
+    }
+
+    const analytics = allMonths.map(({ year, month, monthName }) => {
+      const order = orderAmounts.find(
+        order => order._id.year === year && order._id.month === month,
+      );
       const subscription = subscriptionAmounts.find(
         subscription =>
-          subscription._id.year === order._id.year &&
-          subscription._id.month === order._id.month,
+          subscription._id.year === year && subscription._id.month === month,
       );
 
       return {
-        year: order._id.year,
-        month: getMonthName(order._id.month),
-        totalOrderAmount: order.totalAmount,
+        year,
+        month: monthName,
+        totalOrderAmount: order ? order.totalAmount : 0,
         totalSubscriptionAmount: subscription ? subscription.totalAmount : 0,
       };
     });
 
-    return { analytics };
+    return {
+      statusCode: 200,
+      success: true,
+      message: 'Data retrieved successfully',
+      data: {
+        analytics,
+      },
+    };
   } catch (error) {
     logger.error(error);
     throw new Error('An error occurred while processing income growth data.');
   }
+};
+const subscriptionUserDetails = async () => {
+  const subscriptions = await Subscription.find({}).populate([
+    {
+      path: 'user_id',
+      select: 'name email',
+    },
+    {
+      path: 'plan_id',
+      select: 'title price',
+    },
+  ]);
+  return subscriptions;
+};
+const ecommerceUserDetails = async () => {
+  const ecommerce = await Order.find({}).populate([
+    {
+      path: 'user',
+      select: 'name email',
+    },
+    {
+      path: 'product',
+      select: 'productName price',
+    },
+  ]);
+  return ecommerce;
 };
 
 export const DashboardService = {
@@ -313,4 +305,6 @@ export const DashboardService = {
   getMonthlyUserGrowth,
   totalIncomes,
   incomeGrowth,
+  subscriptionUserDetails,
+  ecommerceUserDetails,
 };

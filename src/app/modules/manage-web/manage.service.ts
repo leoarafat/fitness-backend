@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Request } from 'express';
 import ApiError from '../../../errors/ApiError';
-import { logger } from '../../../shared/logger';
+
 import {
   AboutUs,
   ContactInformation,
@@ -175,37 +176,45 @@ const deleteContactUs = async (id: string) => {
 };
 //*
 const addContactInfo = async (payload: any) => {
-  if (!payload) {
-    throw new ApiError(400, 'Please provide data');
+  const checkIsExist = await ContactInformation.findOne({});
+  if (checkIsExist) {
+    throw new ApiError(404, 'Contact info already exist');
   }
-  return await ContactInformation.create(payload);
+  const result = await ContactInformation.create(payload);
+  return result;
 };
+
 const getContactInfo = async () => {
-  try {
-    const results = await ContactInformation.find({});
-
-    const updatedResult = results.reduce(
-      (acc, res) => {
-        res.email.forEach(email => {
-          //@ts-ignore
-          acc.email.push({ id: res._id, email });
-        });
-        res.phone.forEach(phone => {
-          //@ts-ignore
-          acc.phone.push({ id: res._id, phone });
-        });
-        return acc;
-      },
-      { email: [], phone: [] },
-    );
-
-    return [updatedResult];
-  } catch (error) {
-    logger.error('Error fetching contact information:', error);
-    throw error;
-  }
+  const results = await ContactInformation.findOne();
+  return results;
 };
+const updateContactInfo = async (req: Request) => {
+  const { id } = req.params;
 
+  const { data } = req.body;
+
+  const isExist = await ContactInformation.findById(id);
+
+  if (!isExist) {
+    throw new ApiError(404, 'Contact Info not found');
+  }
+
+  const updatedEmail = data?.email?.map((item: any) => ({
+    email: item.email,
+    _id: item._id || undefined,
+  }));
+  const updatedPhone = data?.number?.map((item: any) => ({
+    number: item.number,
+    _id: item._id || undefined,
+  }));
+
+  isExist.email = updatedEmail;
+  isExist.number = updatedPhone;
+
+  await isExist.save();
+
+  return isExist;
+};
 export const ManageService = {
   addPrivacyPolicy,
   addAboutUs,
@@ -225,6 +234,7 @@ export const ManageService = {
   deleteTermsConditions,
   addContactInfo,
   getContactInfo,
+  updateContactInfo,
   addFAQ,
   getFAQ,
   editFAQ,

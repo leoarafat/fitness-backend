@@ -61,25 +61,6 @@ const updateSubscriptionsTitle = async (id: string, payload: any) => {
   }
 };
 
-// const updateSubscriptionsItem = async (id: string, payload: any) => {
-//   const isExistSubscriptionPlan = await SubscriptionPlan.findById(id);
-//   if (!isExistSubscriptionPlan) {
-//     throw new ApiError(404, 'Subscription not found');
-//   }
-
-//   // const subs = await SubscriptionPlan.findOne({ 'items._id': id });
-
-//   // if (!subs) {
-//   //   throw new ApiError(404, 'Item not found');
-//   // }
-
-//   // const result = await SubscriptionPlan.findOneAndUpdate(
-//   //   { 'items._id': id },
-//   //   { $set: { 'items.$.title': payload.title } },
-//   //   { new: true },
-//   // );
-//   // return result;
-// };
 const updateSubscriptionsItem = async (id: string, payload: any) => {
   const { SubscriptionData } = payload;
   const isExistSubscriptionPlan = await SubscriptionPlan.findById(id);
