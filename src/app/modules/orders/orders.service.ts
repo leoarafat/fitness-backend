@@ -29,21 +29,23 @@ const makeOrder = async (req: Request) => {
 };
 
 const getAllOrders = async (query: Record<string, any>) => {
-  const orderQuery = new QueryBuilder(
-    Order.find().populate([
-      {
-        path: 'user',
-        select: 'name email',
-      },
-      {
-        path: 'product',
-        select: 'productName gender price',
-      },
-    ]),
-    query,
+  const orderQuery = (
+    await new QueryBuilder(
+      Order.find().populate([
+        {
+          path: 'user',
+          select: 'name email',
+        },
+        {
+          path: 'product',
+          select: 'productName gender price',
+        },
+      ]),
+      query,
+    )
+      .search(['address'])
+      .filter()
   )
-    .search(['address'])
-    .filter()
     .sort()
     .paginate()
     .fields();
@@ -66,15 +68,17 @@ const getSingle = async (id: string) => {
 const myOrders = async (req: Request) => {
   const user = req.user as IReqUser;
   const query = req.query;
-  const orderQuery = new QueryBuilder(
-    Order.find({ user: user?.userId }).populate({
-      path: 'product',
-      select: 'productName images price',
-    }),
-    query,
+  const orderQuery = (
+    await new QueryBuilder(
+      Order.find({ user: user?.userId }).populate({
+        path: 'product',
+        select: 'productName images price',
+      }),
+      query,
+    )
+      .search(['address'])
+      .filter()
   )
-    .search(['address'])
-    .filter()
     .sort()
     .paginate()
     .fields();

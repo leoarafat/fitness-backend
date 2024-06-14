@@ -58,9 +58,11 @@ const createClass = async (req: Request) => {
 const allClasses = async (
   query: Record<string, unknown>,
 ): Promise<IGenericResponse<IClass[]>> => {
-  const classQuery = new QueryBuilder(Classes.find(), query)
-    .search(['topic', 'title'])
-    .filter()
+  const classQuery = (
+    await new QueryBuilder(Classes.find(), query)
+      .search(['topic', 'title'])
+      .filter()
+  )
     .sort()
     .paginate()
     .fields();
@@ -75,9 +77,11 @@ const allClasses = async (
 };
 
 const getClassBySeries = async (id: string, query: Record<string, unknown>) => {
-  const userQuery = new QueryBuilder(Classes.find({ series: id }), query)
-    .search(['topic', 'title'])
-    .filter()
+  const userQuery = (
+    await new QueryBuilder(Classes.find({ series: id }), query)
+      .search(['topic', 'title'])
+      .filter()
+  )
     .sort()
     .paginate()
     .fields();

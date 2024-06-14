@@ -25,9 +25,11 @@ const addBlog = async (user: IReqUser, req: Request) => {
 };
 //*
 const getBlogs = async (query: Record<string, unknown>) => {
-  const postQuery = new QueryBuilder(Blog.find({}), query)
-    .search(['title', 'topic', 'description'])
-    .filter()
+  const postQuery = (
+    await new QueryBuilder(Blog.find({}), query)
+      .search(['title', 'topic', 'description'])
+      .filter()
+  )
     .sort()
     .paginate()
     .fields();

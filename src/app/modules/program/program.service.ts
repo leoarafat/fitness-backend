@@ -33,9 +33,9 @@ const addProgram = async (req: Request) => {
 const getAllProgram = async (
   query: Record<string, unknown>,
 ): Promise<IGenericResponse<IProgram[]>> => {
-  const userQuery = new QueryBuilder(Program.find(), query)
-    .search(['title'])
-    .filter()
+  const userQuery = (
+    await new QueryBuilder(Program.find(), query).search(['title']).filter()
+  )
     .sort()
     .paginate()
     .fields();
@@ -61,12 +61,11 @@ const singleProgram = async (id: string, query: Record<string, unknown>) => {
 
   const seriesWithClasses = await Promise.all(
     serieses.map(async series => {
-      const classQuery = new QueryBuilder(
-        Classes.find({ series: series._id }),
-        query,
+      const classQuery = (
+        await new QueryBuilder(Classes.find({ series: series._id }), query)
+          .search(['topic', 'title'])
+          .filter()
       )
-        .search(['topic', 'title'])
-        .filter()
         .sort()
         .paginate()
         .fields();

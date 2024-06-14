@@ -30,9 +30,11 @@ const createProduct = async (req: Request) => {
 const allProducts = async (
   query: Record<string, unknown>,
 ): Promise<IGenericResponse<IProducts[]>> => {
-  const userQuery = new QueryBuilder(Products.find(), query)
-    .search(['productName'])
-    .filter()
+  const userQuery = (
+    await new QueryBuilder(Products.find(), query)
+      .search(['productName'])
+      .filter()
+  )
     .sort()
     .paginate()
     .fields();

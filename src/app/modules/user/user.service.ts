@@ -16,7 +16,6 @@ import {
   ILoginUserResponse,
   IRefreshTokenResponse,
 } from '../auth/auth.interface';
-import { updateImageUrl } from '../../../utils/url-modifier';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import { IGenericResponse } from '../../../interfaces/paginations';
 import httpStatus from 'http-status';
@@ -66,9 +65,11 @@ const createUser = async (userData: IUser): Promise<IUser | null> => {
 const getAllUsers = async (
   query: Record<string, unknown>,
 ): Promise<IGenericResponse<IUser[]>> => {
-  const userQuery = new QueryBuilder(User.find(), query)
-    .search(userSearchableField)
-    .filter()
+  const userQuery = (
+    await new QueryBuilder(User.find(), query)
+      .search(userSearchableField)
+      .filter()
+  )
     .sort()
     .paginate()
     .fields();

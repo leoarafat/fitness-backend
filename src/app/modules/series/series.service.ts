@@ -23,9 +23,11 @@ const addSeries = async (req: Request) => {
 const getAllSeries = async (
   query: Record<string, unknown>,
 ): Promise<IGenericResponse<ISeries[]>> => {
-  const userQuery = new QueryBuilder(Series.find().populate('program'), query)
-    .search(['title', 'name'])
-    .filter()
+  const userQuery = (
+    await new QueryBuilder(Series.find().populate('program'), query)
+      .search(['title', 'name'])
+      .filter()
+  )
     .sort()
     .paginate()
     .fields();
@@ -42,9 +44,11 @@ const getAllSeries = async (
 //*
 const singleSeries = async (id: string, query: Record<string, unknown>) => {
   const series = await Series.findById(id);
-  const classQuery = new QueryBuilder(Classes.find({ series: id }), query)
-    .search(['topic', 'title'])
-    .filter()
+  const classQuery = (
+    await new QueryBuilder(Classes.find({ series: id }), query)
+      .search(['topic', 'title'])
+      .filter()
+  )
     .sort()
     .paginate()
     .fields();

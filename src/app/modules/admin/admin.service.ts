@@ -61,9 +61,11 @@ const createUser = async (userData: IUser): Promise<IUser | null> => {
 const getAllUsers = async (
   query: Record<string, unknown>,
 ): Promise<IGenericResponse<IUser[]>> => {
-  const userQuery = new QueryBuilder(User.find({ role: 'USER' }), query)
-    .search(['name', 'email'])
-    .filter()
+  const userQuery = (
+    await new QueryBuilder(User.find({ role: 'USER' }), query)
+      .search(['name', 'email'])
+      .filter()
+  )
     .sort()
     .paginate()
     .fields();

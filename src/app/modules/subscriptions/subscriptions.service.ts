@@ -39,12 +39,11 @@ const upgradeSubscription = async (req: Request) => {
   }
 };
 const AllSubscriber = async (query: Record<string, unknown>) => {
-  const orderQuery = new QueryBuilder(
-    Subscription.find().populate('user_id'),
-    query,
+  const orderQuery = (
+    await new QueryBuilder(Subscription.find().populate('user_id'), query)
+      .search(['startDate'])
+      .filter()
   )
-    .search(['startDate'])
-    .filter()
     .sort()
     .paginate()
     .fields();

@@ -58,16 +58,18 @@ const addReply = async (req: Request) => {
   return isExistComment;
 };
 const allComments = async (query: Record<string, unknown>) => {
-  const commentQuery = new QueryBuilder(
-    Comment.find(),
-    // .populate({
-    //   path: 'reply.adminId',
-    //   select: '_id email name',
-    // }),
-    query,
+  const commentQuery = (
+    await new QueryBuilder(
+      Comment.find(),
+      // .populate({
+      //   path: 'reply.adminId',
+      //   select: '_id email name',
+      // }),
+      query,
+    )
+      .search(['comment'])
+      .filter()
   )
-    .search(['comment'])
-    .filter()
     .sort()
     .paginate()
     .fields();

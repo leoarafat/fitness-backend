@@ -18,9 +18,11 @@ const addReview = async (user: IReqUser, payload: IReview) => {
   }
 };
 const getReviews = async (query: Record<string, unknown>) => {
-  const ReviewQuery = new QueryBuilder(Review.find({}), query)
-    .search(['title', 'description'])
-    .filter()
+  const ReviewQuery = (
+    await new QueryBuilder(Review.find({}), query)
+      .search(['title', 'description'])
+      .filter()
+  )
     .sort()
     .paginate()
     .fields();
