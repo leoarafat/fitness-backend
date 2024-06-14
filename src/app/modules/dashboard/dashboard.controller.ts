@@ -47,15 +47,26 @@ const getMonthlyUserGrowth = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+// const incomeGrowth = catchAsync(async (req: Request, res: Response) => {
+//   const result = await DashboardService.incomeGrowth();
+//   sendResponse(res, {
+//     statusCode: 200,
+//     success: true,
+//     message: 'Data retrieved successful',
+//     data: result,
+//   });
+// });
 const incomeGrowth = catchAsync(async (req: Request, res: Response) => {
-  const result = await DashboardService.incomeGrowth();
+  const { year } = req.query; // Retrieve year from query parameters
+  const result = await DashboardService.incomeGrowth(Number(year)); // Pass year to service function
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: 'Data retrieved successful',
+    message: 'Data retrieved successfully',
     data: result,
   });
 });
+
 const subscriptionUserDetails = catchAsync(
   async (req: Request, res: Response) => {
     const result = await DashboardService.subscriptionUserDetails();

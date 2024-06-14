@@ -18,7 +18,7 @@ async function main() {
     logger.info('DB Connected on Successfully');
     const port =
       typeof config.port === 'number' ? config.port : Number(config.port);
-    server.listen(port, config.base_url, () => {
+    server.listen(port, () => {
       logger.info(`Example app listening on port ${config.port}`);
     });
   } catch (error) {

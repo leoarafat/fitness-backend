@@ -79,20 +79,42 @@ const getMonthlySubscriptionGrowth = async (year?: number) => {
       },
     ]);
 
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
     const result = [];
     for (let i = 1; i <= 12; i++) {
       const monthData = monthlySubscriptionGrowth.find(
         data => data.month === i,
-      ) || { month: i, count: 0 };
-      result.push(monthData);
+      ) || { month: i, count: 0, year: selectedYear };
+      result.push({
+        ...monthData,
+        month: months[i - 1], // Convert month number to month name
+      });
     }
 
-    return result;
+    return {
+      year: selectedYear,
+      data: result,
+    };
   } catch (error) {
     logger.error('Error in getMonthlySubscriptionGrowth function: ', error);
     throw error;
   }
 };
+
 const getMonthlyUserGrowth = async (year?: number) => {
   try {
     const currentYear = new Date().getFullYear();
@@ -131,21 +153,44 @@ const getMonthlyUserGrowth = async (year?: number) => {
       },
     ]);
 
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
     const result = [];
     for (let i = 1; i <= 12; i++) {
       const monthData = monthlyUserGrowth.find(data => data.month === i) || {
         month: i,
         count: 0,
+        year: selectedYear,
       };
-      result.push(monthData);
+      result.push({
+        ...monthData,
+        month: months[i - 1], // Convert month number to month name
+      });
     }
 
-    return result;
+    return {
+      year: selectedYear,
+      data: result,
+    };
   } catch (error) {
     logger.error('Error in getMonthlyUserGrowth function: ', error);
     throw error;
   }
 };
+
 const totalIncomes = async () => {
   const totalSubscription = await Subscription.aggregate([
     {
@@ -177,13 +222,15 @@ const totalIncomes = async () => {
   };
 };
 
-const incomeGrowth = async () => {
+const incomeGrowth = async (year?: number) => {
   try {
     const now = new Date();
-    const last12Months = new Date(now.getFullYear(), 0, 1);
+    const currentYear = year || now.getFullYear(); // Use the provided year or default to the current year
+    const startDate = new Date(currentYear, 0, 1);
+    const endDate = new Date(currentYear + 1, 0, 1);
 
     const orderAggregation = [
-      { $match: { createdAt: { $gte: last12Months } } },
+      { $match: { createdAt: { $gte: startDate, $lt: endDate } } },
       {
         $group: {
           _id: {
@@ -197,7 +244,7 @@ const incomeGrowth = async () => {
     ];
 
     const subscriptionAggregation = [
-      { $match: { createdAt: { $gte: last12Months } } },
+      { $match: { createdAt: { $gte: startDate, $lt: endDate } } },
       {
         $group: {
           _id: {
@@ -234,7 +281,7 @@ const incomeGrowth = async () => {
 
     const allMonths = [];
     for (let i = 0; i < 12; i++) {
-      const date = new Date(now.getFullYear(), i, 1);
+      const date = new Date(currentYear, i, 1);
       allMonths.push({
         year: date.getFullYear(),
         month: i + 1,
@@ -272,6 +319,7 @@ const incomeGrowth = async () => {
     throw new Error('An error occurred while processing income growth data.');
   }
 };
+
 const subscriptionUserDetails = async () => {
   const subscriptions = await Subscription.find({}).populate([
     {
