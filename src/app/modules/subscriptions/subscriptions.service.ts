@@ -42,7 +42,7 @@ const upgradeSubscription = async (req: Request) => {
   return subscription;
 };
 const AllSubscriber = async (query: Record<string, unknown>) => {
-  const orderQuery = (
+  const subscriptionsQuery = (
     await new QueryBuilder(Subscription.find().populate('user_id'), query)
       .search(['plan_type'])
       .filter()
@@ -51,98 +51,17 @@ const AllSubscriber = async (query: Record<string, unknown>) => {
     .paginate()
     .fields();
 
-  const result = await orderQuery.modelQuery;
-
-  const meta = await orderQuery.countTotal();
-
+  const result = await subscriptionsQuery.modelQuery;
+  const meta = await subscriptionsQuery.countTotal();
+  const subscriptions = await Subscription.find({});
+  const planTypes = subscriptions?.map(sub => sub?.plan_type);
   return {
     meta,
     data: result,
+    planTypes,
   };
 };
-// const AllSubscriber = async (
-//   filters: any,
-//   paginationOptions: IPaginationOptions,
-//   fields: any,
-// ) => {
-//   const { searchTerm, ...filtersData } = filters;
-//   const { page, limit, skip, sortBy, sortOrder } =
-//     paginationHelpers.calculatePagination(paginationOptions);
-//   const andConditions: any[] = [];
-//   if (searchTerm) {
-//     const fuzzySearchRegex = new RegExp([...searchTerm].join('.*'), 'i');
 
-//     andConditions.push({
-//       $or: [
-//         ...['plan_type'].map(field => ({
-//           [field]: {
-//             $regex: fuzzySearchRegex,
-//           },
-//         })),
-//         {
-//           user_id: {
-//             $in: await User.find({
-//               $or: [{ plan_type: { $regex: fuzzySearchRegex } }],
-//             }).distinct('_id'),
-//           },
-//         },
-//       ],
-//     });
-//   }
-//   if (Object.keys(filtersData).length) {
-//     andConditions.push({
-//       $and: Object.entries(filtersData).map(([field, value]) => ({
-//         [field]: value,
-//       })),
-//     });
-//   }
-//   // andConditions.push({
-//   //   $or: [
-//   //     { plan_type:  },
-
-//   //   ],
-//   // });
-
-//   const projection: { [key: string]: 1 } = {};
-//   if (fields) {
-//     fields.split(',').forEach((field: string) => {
-//       projection[field.trim()] = 1;
-//     });
-//   }
-//   const sortConditions: { [key: string]: SortOrder } = {};
-
-//   if (sortBy && sortOrder) {
-//     sortConditions[sortBy] = sortOrder;
-//   }
-//   const whereConditions =
-//     andConditions.length > 0 ? { $and: andConditions } : {};
-
-//   const result = await Subscription.find(whereConditions)
-//     .select(projection)
-
-//     .populate('user_id')
-//     .sort(sortConditions)
-//     .skip(skip)
-//     .limit(limit);
-
-//   const userIds = [...new Set(result.map(sub => sub.user_id))];
-
-//   const users = await User.find({ _id: { $in: userIds } });
-
-//   const total = users?.length;
-
-//   const totalPage = Math.ceil(total / limit);
-
-//   return {
-//     meta: {
-//       page,
-//       limit,
-//       total,
-//       totalPage,
-//     },
-//     data: users,
-//   };
-// };
 const mySubscription = async (req: Request) => {
   const { userId } = req.user as IReqUser;
   const isExistUser = await User.findById(userId);
