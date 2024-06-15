@@ -12,4 +12,15 @@ router.post(
   uploadFile(),
   BannerController.addBanner,
 );
+router.patch(
+  '/edit/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  uploadFile(),
+  BannerController.updateBanner,
+);
+router.delete(
+  '/delete/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  BannerController.deleteBanner,
+);
 export const BannerRoutes = router;

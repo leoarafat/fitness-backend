@@ -14,10 +14,6 @@ const orderSchema = new Schema<IOrder>(
       required: true,
     },
 
-    // transactionId: {
-    //   type: String,
-    //   required: true,
-    // },
     location: {
       type: String,
       required: true,

@@ -59,28 +59,7 @@ const deleteBlog = async (id: string) => {
   return await Blog.findByIdAndDelete(id);
 };
 //*
-// const updateBlog = async (req: Request) => {
-//   const id = req.params.id;
-//   const blog = await Blog.findById(id);
-//   if (!blog) {
-//     throw new ApiError(httpStatus.NOT_FOUND, 'blog not found');
-//   }
 
-//   const { ...blogData } = req.body;
-
-//   //@ts-ignore
-//   const images = req.files?.image;
-
-//   if (images) {
-//     blogData.images = images.map((img: any) => `/images/image/${img.filename}`);
-//   }
-
-//   const updatedBlog = await Blog.findByIdAndUpdate(id, blogData, {
-//     new: true,
-//     runValidators: true,
-//   });
-//   return updatedBlog;
-// };
 //*
 const updateBlog = async (id: string, payload: any) => {
   // console.log(payload);

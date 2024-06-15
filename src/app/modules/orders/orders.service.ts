@@ -28,7 +28,7 @@ const makeOrder = async (req: Request) => {
   return await Order.create(payload);
 };
 
-const getAllOrders = async (query: Record<string, any>) => {
+const getAllOrders = async (query: Record<string, unknown>) => {
   const orderQuery = (
     await new QueryBuilder(
       Order.find().populate([
@@ -43,7 +43,7 @@ const getAllOrders = async (query: Record<string, any>) => {
       ]),
       query,
     )
-      .search(['address'])
+      .search(['location'])
       .filter()
   )
     .sort()
@@ -76,7 +76,7 @@ const myOrders = async (req: Request) => {
       }),
       query,
     )
-      .search(['address'])
+      .search(['location'])
       .filter()
   )
     .sort()
