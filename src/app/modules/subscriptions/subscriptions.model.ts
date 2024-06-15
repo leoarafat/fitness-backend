@@ -33,16 +33,16 @@ const subscriptionSchema = new Schema<ISubscription>(
     },
     plan_type: {
       type: String,
-      enum: ['free', 'basic', 'gold', 'premium'],
-      default: 'free',
+      enum: ['silver', 'gold', 'premium'],
+      required: true,
     },
     status: {
       type: String,
       required: true,
       enum: ['active', 'inactive'],
-      default: 'inactive',
+      default: 'active',
     },
-    trasactionId: { type: String, required: false },
+    transactionId: { type: String, required: false },
   },
   {
     timestamps: true,

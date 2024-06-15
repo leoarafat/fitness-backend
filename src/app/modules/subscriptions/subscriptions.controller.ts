@@ -21,6 +21,22 @@ const AllSubscriber = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+// const AllSubscriber = catchAsync(async (req: Request, res: Response) => {
+//   const filters = pick(req.query, ['searchTerm']);
+//   const paginationOptions = pick(req.query, paginationFields);
+
+//   const result = await SubscriptionService.AllSubscriber(
+//     filters,
+//     paginationOptions,
+//   );
+//   sendResponse(res, {
+//     statusCode: 200,
+//     success: true,
+//     message: 'Data Retrieved Successful',
+//     data: result.data,
+//     meta: result.meta,
+//   });
+// });
 const mySubscription = catchAsync(async (req: Request, res: Response) => {
   const result = await SubscriptionService.mySubscription(req);
   sendResponse(res, {

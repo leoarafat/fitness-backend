@@ -1,5 +1,4 @@
 import { FilterQuery, Query } from 'mongoose';
-import { Subscription } from '../app/modules/subscriptions/subscriptions.model';
 
 class QueryBuilder<T> {
   public modelQuery: Query<T[], T>;
@@ -27,20 +26,11 @@ class QueryBuilder<T> {
   }
 
   async filter() {
-    const queryObj = { ...this.query }; // copy
-
-    // Filtering
+    const queryObj = { ...this.query };
     const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
 
     excludeFields.forEach(el => delete queryObj[el]);
-    if (queryObj.plan_type) {
-      const subscriptions = await Subscription.find({
-        plan_type: queryObj.plan_type as string,
-      }).select('user_id');
-      const userIds = subscriptions.map(sub => sub.user_id);
-      queryObj._id = { $in: userIds };
-      delete queryObj.plan_type;
-    }
+
     this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
 
     return this;

@@ -109,10 +109,9 @@ const UserSchema = new Schema<IUser, UserModel>(
     verifyExpire: {
       type: Date,
     },
-    plan_type: {
-      type: String,
-      enum: ['free', 'basic', 'gold', 'premium'],
-      default: 'free',
+    isSubscribed: {
+      type: Boolean,
+      default: false,
     },
   },
   {

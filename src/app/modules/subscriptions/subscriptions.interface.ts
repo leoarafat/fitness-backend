@@ -12,6 +12,6 @@ export type ISubscription = {
   payment_status: SubscriptionStatus;
   plan_type: SubscriptionPlan;
   status: SubscriptionState;
-  trasactionId?: string;
+  transactionId?: string;
   amount: number;
 };

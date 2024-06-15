@@ -61,6 +61,7 @@ export type IUser = {
   plan_type: 'free' | 'basic' | 'gold' | 'premium';
   verifyExpire: Date | null;
   verifyCode: string | null;
+  isSubscribed: boolean;
 };
 export type UserModel = {
   isUserExist(
