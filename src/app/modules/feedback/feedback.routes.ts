@@ -9,9 +9,15 @@ router.post(
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER, ENUM_USER_ROLE.SUPER_ADMIN),
   FeedbackController.sendFeedBack,
 );
+router.get('/all', FeedbackController.getFeedback);
 router.get(
-  '/all',
-  // auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
-  FeedbackController.getFeedback,
+  '/all-by-admin',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  FeedbackController.getFeedbackForAdmin,
+);
+router.patch(
+  '/approve',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  FeedbackController.approvedFeedback,
 );
 export const FeedbackRoutes = router;

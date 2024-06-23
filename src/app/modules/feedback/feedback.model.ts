@@ -13,6 +13,11 @@ const feedbackSchema = new mongoose.Schema<IFeedback>(
       type: String,
       required: true,
     },
+    approveStatus: {
+      type: String,
+      enum: ['pending', 'approved'],
+      default: 'pending',
+    },
   },
   {
     timestamps: true,

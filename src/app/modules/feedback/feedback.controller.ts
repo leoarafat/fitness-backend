@@ -21,8 +21,28 @@ const getFeedback = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getFeedbackForAdmin = catchAsync(async (req: Request, res: Response) => {
+  const result = await FeedBackService.getFeedbackForAdmin(req.query);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Feedback retrieved successfully',
+    data: result,
+  });
+});
+const approvedFeedback = catchAsync(async (req: Request, res: Response) => {
+  const result = await FeedBackService.approvedFeedback(req.params.id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Feedback approved successfully',
+    data: result,
+  });
+});
 
 export const FeedbackController = {
   sendFeedBack,
   getFeedback,
+  approvedFeedback,
+  getFeedbackForAdmin,
 };
