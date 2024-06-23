@@ -11,6 +11,11 @@ const programSchema = new Schema<IProgram>(
       type: String,
       required: true,
     },
+    accessType: {
+      type: String,
+      enum: ['Basic', 'Standard', 'Premium'],
+      required: true,
+    },
   },
   {
     timestamps: true,

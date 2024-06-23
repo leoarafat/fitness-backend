@@ -7,4 +7,5 @@ export type IBlog = {
   description: string;
   images: [];
   created_by: Types.ObjectId | IAdmin;
+  accessType: 'Basic' | 'Standard' | 'Premium';
 };
