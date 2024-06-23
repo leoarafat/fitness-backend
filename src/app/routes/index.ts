@@ -18,6 +18,7 @@ import { DashboardRoutes } from '../modules/dashboard/dashboard.routes';
 import { CommentRoutes } from '../modules/comments/comments.routes';
 import { BannerRoutes } from '../modules/banner/banner.routes';
 import { NotificationRoutes } from '../modules/notifications/notifications.routes';
+import { LogoRoutes } from '../modules/logo/logo.routes';
 
 const router = express.Router();
 
@@ -94,6 +95,10 @@ const moduleRoutes = [
   {
     path: '/banner',
     route: BannerRoutes,
+  },
+  {
+    path: '/logo',
+    route: LogoRoutes,
   },
   {
     path: '/notification',
