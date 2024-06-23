@@ -67,7 +67,6 @@ const updateSubscriptionsItem = async (id: string, payload: any) => {
 
   isExistSubscriptionPlan.title = SubscriptionData.title;
   isExistSubscriptionPlan.price = SubscriptionData.price;
-  // isExistSubscriptionPlan.duration = SubscriptionData.duration;
 
   const updatedItems = SubscriptionData.items.map((item: any) => ({
     title: item.title,

@@ -1,7 +1,7 @@
 import { Schema } from 'mongoose';
 
 type SubscriptionStatus = 'paid' | 'unpaid' | 'trail';
-type SubscriptionPlan = 'free' | 'basic' | 'gold' | 'premium';
+type SubscriptionPlan = 'basic' | 'standard' | 'premium';
 type SubscriptionState = 'active' | 'inactive';
 
 export type ISubscription = {

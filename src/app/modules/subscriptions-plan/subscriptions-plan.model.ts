@@ -32,7 +32,7 @@ const subscriptionsSchema = new Schema<ISubscriptionPlan>(
     },
     plan_type: {
       type: String,
-      enum: ['silver', 'gold', 'premium'],
+      enum: ['basic', 'standard', 'premium'],
       required: true,
     },
   },

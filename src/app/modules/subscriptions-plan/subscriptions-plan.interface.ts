@@ -5,7 +5,7 @@ export type ISubscriptionPlan = {
   items: [];
   price: number;
   status: boolean;
-  plan_type: 'free' | 'basic' | 'gold' | 'premium';
+  plan_type: 'basic' | 'standard' | 'premium';
   duration: number;
 };
 export type ISubscriptionPlanItem = {
