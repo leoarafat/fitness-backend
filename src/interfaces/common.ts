@@ -5,3 +5,15 @@ export type IGenericErrorResponse = {
   message: string;
   errorMessages: IGenericErrorMessage[];
 };
+type UploadedFile = {
+  filename: string;
+  path: string;
+};
+
+export type CustomRequest = {
+  files?: {
+    thumbnail?: UploadedFile[];
+    video_thumbnail?: UploadedFile[];
+    video?: UploadedFile[];
+  };
+} & Request;
