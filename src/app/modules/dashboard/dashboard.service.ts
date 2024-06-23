@@ -2,13 +2,13 @@
 import { getYearRange } from '../../../helpers/getYears';
 import { logger } from '../../../shared/logger';
 import { Order } from '../orders/orders.model';
+import { Products } from '../products/products.model';
 import { Subscription } from '../subscriptions/subscriptions.model';
 import User from '../user/user.model';
-
 const totalCount = async () => {
   try {
-    const users = await User.countDocuments();
-
+    const totalMaleUsers = await User.countDocuments({ gender: 'male' });
+    const totalFemaleUsers = await User.countDocuments({ gender: 'female' });
     const subscribers = await Subscription.countDocuments();
 
     const totalSellingProduct = await Order.countDocuments();
@@ -24,22 +24,113 @@ const totalCount = async () => {
 
     const totalEarning =
       totalEarningResult.length > 0 ? totalEarningResult[0].totalEarnings : 0;
+
     const newSubscribers = await Subscription.find({})
       .sort({ createdAt: -1 })
       .populate('user_id');
 
+    const topSellingProductsResult = await Order.aggregate([
+      {
+        $group: {
+          _id: '$product',
+          count: { $sum: '$quantity' },
+        },
+      },
+      {
+        $sort: { count: -1 },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
+
+    const topSellingProducts = await Products.find({
+      _id: { $in: topSellingProductsResult.map(item => item._id) },
+    });
+
+    const topSellingProductsWithCount = topSellingProducts.map(product => {
+      const countData = topSellingProductsResult.find(item =>
+        item._id.equals(product._id),
+      );
+      return {
+        //@ts-ignore
+        ...product._doc,
+        count: countData ? countData.count : 0,
+      };
+    });
+
     return {
-      users,
+      totalMaleUsers,
+      totalFemaleUsers,
       subscribers,
       totalSellingProduct,
       totalEarning,
       newSubscribers,
+      topSellingProducts: topSellingProductsWithCount,
     };
   } catch (error) {
     logger.error('Error in totalCount function: ', error);
     throw error;
   }
 };
+
+// const totalCount = async () => {
+//   try {
+//     const totalMaleUsers = await User.countDocuments({ gender: 'male' });
+//     const totalFemaleUsers = await User.countDocuments({ gender: 'female' });
+//     const subscribers = await Subscription.countDocuments();
+
+//     const totalSellingProduct = await Order.countDocuments();
+
+//     const totalEarningResult = await Order.aggregate([
+//       {
+//         $group: {
+//           _id: null,
+//           totalEarnings: { $sum: '$totalAmount' },
+//         },
+//       },
+//     ]);
+
+//     const totalEarning =
+//       totalEarningResult.length > 0 ? totalEarningResult[0].totalEarnings : 0;
+
+//     const newSubscribers = await Subscription.find({})
+//       .sort({ createdAt: -1 })
+//       .populate('user_id');
+
+//     const mostSellingProductResult = await Order.aggregate([
+//       {
+//         $group: {
+//           _id: '$product',
+//           count: { $sum: '$quantity' },
+//         },
+//       },
+//       {
+//         $sort: { count: -1 },
+//       },
+//       {
+//         $limit: 1,
+//       },
+//     ]);
+
+//     const mostSellingProduct = await Products.findById(
+//       mostSellingProductResult[0]._id,
+//     );
+
+//     return {
+//       totalMaleUsers,
+//       totalFemaleUsers,
+//       subscribers,
+//       totalSellingProduct,
+//       totalEarning,
+//       newSubscribers,
+//       mostSellingProduct,
+//     };
+//   } catch (error) {
+//     logger.error('Error in totalCount function: ', error);
+//     throw error;
+//   }
+// };
 
 const getMonthlySubscriptionGrowth = async (year?: number) => {
   try {
