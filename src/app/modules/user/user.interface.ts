@@ -14,6 +14,8 @@ export type IRegistration = {
   password: string;
   avatar?: string;
   role: 'ADMIN' | 'USER';
+  gender: string;
+  age: string;
 };
 export type IActivationToken = {
   token: string;
@@ -41,27 +43,14 @@ export type IUser = {
   profile_image: string;
   cover_image: string;
   date_of_birth: Date;
-  designation: string;
   location: string;
   active_status: 'online' | 'offline';
-  interests: [string];
-  bio: string;
-  work_position: string;
-  education: string;
   language: string;
-  relationship_status: 'single' | 'married' | 'separated';
-  have_kids: string;
-  smoke: string;
-  drink: string;
-  height: string;
-  body_type: string;
-  eyes: string;
-  looking_for: string;
   gender: 'male' | 'female' | 'others';
-  plan_type: 'free' | 'basic' | 'gold' | 'premium';
   verifyExpire: Date | null;
   verifyCode: string | null;
   isSubscribed: boolean;
+  age: string;
 };
 export type UserModel = {
   isUserExist(

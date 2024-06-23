@@ -2,19 +2,15 @@ import { Schema, model } from 'mongoose';
 import { IUser, UserModel } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../../config';
-const InterestSchema = new Schema({
-  name: {
-    type: String,
-  },
-  description: {
-    type: String,
-  },
-});
+
 const UserSchema = new Schema<IUser, UserModel>(
   {
     name: {
       type: String,
-
+      required: true,
+    },
+    age: {
+      type: String,
       required: true,
     },
     user_name: {
@@ -51,6 +47,7 @@ const UserSchema = new Schema<IUser, UserModel>(
     gender: {
       type: String,
       enum: ['male', 'female', 'others'],
+      required: true,
     },
     profile_image: {
       type: String,
@@ -66,7 +63,7 @@ const UserSchema = new Schema<IUser, UserModel>(
     bio: {
       type: String,
     },
-    interests: [InterestSchema],
+
     work_position: {
       type: String,
     },
@@ -76,30 +73,7 @@ const UserSchema = new Schema<IUser, UserModel>(
     language: {
       type: String,
     },
-    relationship_status: {
-      type: String,
-    },
-    have_kids: {
-      type: String,
-    },
-    smoke: {
-      type: String,
-    },
-    drink: {
-      type: String,
-    },
-    height: {
-      type: String,
-    },
-    body_type: {
-      type: String,
-    },
-    eyes: {
-      type: String,
-    },
-    looking_for: {
-      type: String,
-    },
+
     date_of_birth: {
       type: Date,
     },

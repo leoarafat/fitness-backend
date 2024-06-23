@@ -28,12 +28,14 @@ import { logger } from '../../../shared/logger';
 
 //*
 const registrationUser = async (payload: IRegistration) => {
-  const { name, email, password } = payload;
+  const { name, email, password, age, gender } = payload;
 
   const user = {
     name,
     email,
     password,
+    age,
+    gender,
   };
   const isEmailExist = await User.findOne({ email }).lean();
   if (isEmailExist) {
