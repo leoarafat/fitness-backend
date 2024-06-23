@@ -38,28 +38,24 @@ const classSchema = new Schema<IClass>(
     },
     pdfFile: {
       type: String,
-      required: true,
-      validate: {
-        validator: function (v: string) {
-          return /\.pdf$/.test(v);
-        },
-        message: props => `${props.value} is not a valid PDF file!`,
-      },
+      // required: true,
+      // validate: {
+      //   validator: function (v: string) {
+      //     return /\.pdf$/.test(v);
+      //   },
+      //   message: props => `${props.value} is not a valid PDF file!`,
+      // },
     },
     docFile: {
       type: String,
-      required: true,
-      validate: {
-        validator: function (v: string) {
-          return /\.(doc|docx)$/.test(v);
-        },
-        message: props => `${props.value} is not a valid DOC file!`,
-      },
+      // required: true,
+      // validate: {
+      //   validator: function (v: string) {
+      //     return /\.(doc|docx)$/.test(v);
+      //   },
+      //   message: props => `${props.value} is not a valid DOC file!`,
+      // },
     },
-    // isRead: {
-    //   type: Boolean,
-    //   default: false,
-    // },
   },
   {
     timestamps: true,

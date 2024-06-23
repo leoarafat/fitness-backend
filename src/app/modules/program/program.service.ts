@@ -83,26 +83,32 @@ const singleProgram = async (id: string, query: Record<string, unknown>) => {
       };
     }),
   );
+
   const filteredSeries = seriesWithClasses.filter(
     series => series.classes.length > 0,
   );
+
   const totalClasses = filteredSeries.reduce(
     (acc, series) => acc + series.classes.length,
     0,
   );
+
   const result = {
     program,
     series: filteredSeries.length > 0 ? filteredSeries : [],
   };
+
   const meta = {
     totalSeries: Number(filteredSeries.length),
     totalClasses,
   };
+
   return {
     meta,
     data: result,
   };
 };
+
 //!
 // const singleProgram = async (id: string, query: Record<string, unknown>) => {
 //   const program = await Program.findById(id);

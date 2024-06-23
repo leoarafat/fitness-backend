@@ -30,6 +30,7 @@ const addWatchList = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 const getClassBySeries = catchAsync(async (req: Request, res: Response) => {
   const result = await ClassService.getClassBySeries(req.params.id, req.query);
   sendResponse(res, {

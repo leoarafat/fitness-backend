@@ -14,28 +14,26 @@ const addToCart = async (req: Request) => {
   if (!findProduct) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
   }
-  const isExist = await Cart.findOne({ productId: id });
-  if (isExist) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Already added your cart list');
-  } else {
-    return await Cart.create({
-      productId: id,
-      user: userId,
-      quantity: data?.quantity,
-    });
-  }
+
+  return await Cart.create({
+    productId: id,
+    user: userId,
+    quantity: data?.quantity,
+  });
 };
 const myCartLists = async (req: Request) => {
   const { userId } = req.user as IReqUser;
   return await Cart.find({ user: userId }).populate('productId');
 };
+
 const deleteCart = async (id: string) => {
-  const isExist = await Cart.findOne({ productId: id });
+  const isExist = await Cart.findOne({ _id: id });
   if (!isExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Product not found');
   }
-  return await Cart.findOneAndDelete({ productId: id });
+  return await Cart.findOneAndDelete({ _id: id });
 };
+
 export const CartService = {
   addToCart,
   myCartLists,

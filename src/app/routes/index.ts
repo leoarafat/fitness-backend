@@ -17,6 +17,7 @@ import { SeriesRoutes } from '../modules/series/series.routes';
 import { DashboardRoutes } from '../modules/dashboard/dashboard.routes';
 import { CommentRoutes } from '../modules/comments/comments.routes';
 import { BannerRoutes } from '../modules/banner/banner.routes';
+import { NotificationRoutes } from '../modules/notifications/notifications.routes';
 
 const router = express.Router();
 
@@ -93,6 +94,10 @@ const moduleRoutes = [
   {
     path: '/banner',
     route: BannerRoutes,
+  },
+  {
+    path: '/notification',
+    route: NotificationRoutes,
   },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));

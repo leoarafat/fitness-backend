@@ -123,7 +123,7 @@ const updateProfile = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: 'Profile update successfully',
+    message: 'Profile updated successfully',
     data: result,
   });
 });
@@ -135,17 +135,15 @@ const forgotPass = catchAsync(async (req: Request, res: Response) => {
     message: 'Check your email!',
   });
 });
-const checkIsValidForgetActivationCode = catchAsync(
-  async (req: Request, res: Response) => {
-    const result = await UserService.checkIsValidForgetActivationCode(req.body);
-    sendResponse(res, {
-      statusCode: 200,
-      success: true,
-      message: 'Success!',
-      data: result,
-    });
-  },
-);
+const verifyOtp = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.verifyOtp(req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Success!',
+    data: result,
+  });
+});
 
 const resendActivationCode: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
@@ -193,6 +191,6 @@ export const UserController = {
   resetPassword,
   userBaseOnGender,
   resendActivationCode,
-  checkIsValidForgetActivationCode,
+  verifyOtp,
   getSingleUserById,
 };

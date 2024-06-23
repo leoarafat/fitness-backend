@@ -24,7 +24,7 @@ router.post(
 router.post('/refresh-token', UserController.refreshToken);
 router.get(
   '/admin/users',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   UserController.getAllUsers,
 );
 router.get(
@@ -34,24 +34,28 @@ router.get(
 );
 router.get(
   '/single-user/:id',
-  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   UserController.getSingleUserById,
 );
 router.patch(
   '/change-password',
-  auth(ENUM_USER_ROLE.USER),
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   UserController.changePassword,
 );
 router.post('/forgot-password', UserController.forgotPass);
 router.post('/reset-password', UserController.resetPassword);
 router.post('/resend', UserController.resendActivationCode);
-router.post('/verify-otp', UserController.checkIsValidForgetActivationCode);
+router.post('/verify-otp', UserController.verifyOtp);
 
 //*IDS Work
-router.get('/profile', auth(ENUM_USER_ROLE.USER), UserController.getSingleUser);
+router.get(
+  '/profile',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER, ENUM_USER_ROLE.SUPER_ADMIN),
+  UserController.getSingleUser,
+);
 router.patch(
   '/edit-profile',
-  auth(ENUM_USER_ROLE.USER),
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   uploadFile(),
   UserController.updateProfile,
 );
@@ -72,12 +76,12 @@ router.post('/admin/forgot-password', AdminController.forgotPass);
 router.post('/admin/reset-password', AdminController.resetPassword);
 router.patch(
   '/admin/change-password',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   AdminController.changePassword,
 );
 router.get(
   '/admin/profile',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   AdminController.myProfile,
 );
 router.post(
@@ -90,24 +94,24 @@ router.post(
 
 router.get(
   '/admin/users',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   UserController.getAllUsers,
 );
 router.get(
   '/admin/admins',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   AdminController.getAllAdmin,
 );
 router.post(
   '/admin/add-user',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   AdminController.createUser,
 );
 
 //* Admin Update
 router.patch(
   '/admin/edit-profile/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   uploadFile(),
   AdminController.updateAdmin,
 );

@@ -97,6 +97,7 @@ const getSingleUserById = async (id: string): Promise<IUser | null> => {
   }
   return result;
 };
+
 //*
 const updateProfile = async (req: Request): Promise<IUser | null> => {
   //@ts-ignore
@@ -155,6 +156,7 @@ const updateProfile = async (req: Request): Promise<IUser | null> => {
   }
 };
 //*
+
 const deleteUser = async (id: string): Promise<IUser | null> => {
   const result = await User.findByIdAndDelete(id);
 
@@ -255,6 +257,7 @@ const changePassword = async (
   isUserExist.password = newPassword;
   isUserExist.save();
 };
+
 //!
 const forgotPass = async (payload: { email: string }) => {
   const user = (await User.findOne(
@@ -266,17 +269,10 @@ const forgotPass = async (payload: { email: string }) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'User does not exist!');
   }
 
-  let profile = null;
-  if (user.role === ENUM_USER_ROLE.USER) {
-    profile = await User.findOne({ _id: user?._id });
-  }
+  const profile = await User.findOne({ _id: user?._id });
 
   if (!profile) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Pofile not found!');
-  }
-
-  if (!profile.email) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Email not found!');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Profile not found!');
   }
 
   const activationCode = forgetActivationCode();
@@ -297,6 +293,7 @@ const forgotPass = async (payload: { email: string }) => {
   );
 };
 //!
+
 const resendActivationCode = async (payload: { email: string }) => {
   const email = payload.email;
   const user = await User.findOne({ email });
@@ -336,16 +333,15 @@ const resendActivationCode = async (payload: { email: string }) => {
   `,
   );
 };
+
 //!
 const forgetActivationCode = () => {
   const activationCode = Math.floor(100000 + Math.random() * 900000).toString();
   return activationCode;
 };
 //!
-const checkIsValidForgetActivationCode = async (payload: {
-  code: string;
-  email: string;
-}) => {
+
+const verifyOtp = async (payload: { code: string; email: string }) => {
   const user = await User.findOne({ email: payload.email });
 
   if (!user) {
@@ -365,6 +361,7 @@ const checkIsValidForgetActivationCode = async (payload: {
   return { valid: true };
 };
 //!
+
 const resetPassword = async (payload: {
   email: string;
   newPassword: string;
@@ -393,6 +390,7 @@ const resetPassword = async (payload: {
   await user.save();
 };
 //*
+
 const userBaseOnGender = async () => {
   const maleUsers = await User.find({ gender: 'male' });
   const totalMale = await User.countDocuments(maleUsers);
@@ -426,6 +424,6 @@ export const UserService = {
   resetPassword,
   userBaseOnGender,
   resendActivationCode,
-  checkIsValidForgetActivationCode,
+  verifyOtp,
   getSingleUserById,
 };

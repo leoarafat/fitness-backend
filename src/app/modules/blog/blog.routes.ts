@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post(
   '/add',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   uploadFile(),
   validateRequest(BlogValidation.post),
   BlogController.addBlog,
@@ -26,12 +26,12 @@ router.get(
 );
 router.delete(
   '/delete/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   BlogController.deleteBlog,
 );
 router.patch(
   '/edit/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   uploadFile(),
   validateRequest(BlogValidation.update),
   BlogController.updateBlog,

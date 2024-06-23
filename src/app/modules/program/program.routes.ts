@@ -13,20 +13,22 @@ router.post(
   ProgramController.createProgram,
 );
 router.get('/all', ProgramController.allPrograms);
+
 router.get('/:id', ProgramController.singleProgram);
+
 router.get(
   '/analytics/:id',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER, ENUM_USER_ROLE.SUPER_ADMIN),
   ClassController.getReadUnreadAnalytics,
 );
 router.delete(
   '/delete/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   ProgramController.deleteProgram,
 );
 router.patch(
   '/edit/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   uploadFile(),
   ProgramController.updateProgram,
 );

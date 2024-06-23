@@ -7,7 +7,7 @@ const router = Router();
 
 router.post(
   '/payment-intent',
-  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   PaymentController.makePaymentIntent,
 );
 

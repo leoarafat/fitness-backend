@@ -8,19 +8,19 @@ const router = Router();
 router.get('/', BannerController.getBanner);
 router.post(
   '/add',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   uploadFile(),
   BannerController.addBanner,
 );
 router.patch(
   '/edit/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   uploadFile(),
   BannerController.updateBanner,
 );
 router.delete(
   '/delete/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   BannerController.deleteBanner,
 );
 export const BannerRoutes = router;

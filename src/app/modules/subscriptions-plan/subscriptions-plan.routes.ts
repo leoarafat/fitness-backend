@@ -8,14 +8,14 @@ const router = express.Router();
 
 router.post(
   '/add',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   validateRequest(SubscriptionPlanValidation.post),
   SubscriptionsPlanController.adSubscriptions,
 );
 
 router.post(
   '/add-item',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   SubscriptionsPlanController.adSubscriptionsItem,
 );
 router.get(
@@ -25,23 +25,23 @@ router.get(
 );
 router.delete(
   '/delete-item/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   SubscriptionsPlanController.deleteSubscriptionsTitle,
 );
 router.delete(
   '/delete/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   SubscriptionsPlanController.deleteSubscriptions,
 );
 router.patch(
   '/update/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   validateRequest(SubscriptionPlanValidation.update),
   SubscriptionsPlanController.updateSubscriptionsTitle,
 );
 router.patch(
   '/update-item/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   SubscriptionsPlanController.updateSubscriptionsItem,
 );
 

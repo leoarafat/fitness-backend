@@ -12,7 +12,7 @@ const sendFeedBack = async (req: Request) => {
 const getFeedback = async (query: Record<string, unknown>) => {
   const FeedBackQuery = (
     await new QueryBuilder(
-      FeedBack.find({}).populate({
+      FeedBack.find({}).sort({ createdAt: -1 }).populate({
         path: 'user',
         select: 'name profile_image email role',
       }),

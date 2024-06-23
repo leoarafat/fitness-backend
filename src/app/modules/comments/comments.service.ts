@@ -117,6 +117,7 @@ const singleCommentByClass = async (req: Request) => {
       ])
       .limit(Number(limit));
     const totalComment = await Comment.find({ classId: id });
+    console.log(result);
     return {
       comments: result,
       totalComment: totalComment?.length,

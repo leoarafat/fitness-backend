@@ -13,12 +13,12 @@ router.get('/all', SeriesController.allSeries);
 router.get('/single/:id', SeriesController.singleSeries);
 router.delete(
   '/delete/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   SeriesController.deleteSeries,
 );
 router.patch(
   '/edit/:id',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   SeriesController.updateSeries,
 );
 export const SeriesRoutes = router;

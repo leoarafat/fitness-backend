@@ -6,11 +6,7 @@ import {
   ISubscriptionPlan,
   ISubscriptionPlanItem,
 } from './subscriptions-plan.interface';
-// import stripePackage from 'stripe';
 import { SubscriptionPlan } from './subscriptions-plan.model';
-// const stripe = new stripePackage('your_stripe_secret_key');
-
-//* Admin Management Start
 const addSubscription = async (payload: ISubscriptionPlan) => {
   const checkIsExist = await SubscriptionPlan.findOne({ title: payload.title });
   if (checkIsExist) {
@@ -98,7 +94,7 @@ const deleteSubscriptionsTitle = async (id: string) => {
       { $pull: { items: { _id: id } } },
     );
   } catch (error) {
-    console.error(error);
+    logger.error(error);
   }
 };
 const deleteSubscriptions = async (id: string) => {
@@ -108,44 +104,6 @@ const deleteSubscriptions = async (id: string) => {
   }
   return await SubscriptionPlan.findByIdAndDelete(id);
 };
-//* Admin Management End
-
-//* Buy Subscription Plan for user
-// const upgradeSubscriptionPlan = async (
-//   user: IReqUser,
-//   payload: { planId: string },
-// ) => {
-//   const findUser = await User.findById(user?.userId);
-//   if (!findUser) {
-//     throw new ApiError(404, 'User not found');
-//   }
-
-//   const findPlan = await SubscriptionPlan.findById(payload.planId);
-//   if (!findPlan) {
-//     throw new ApiError(404, 'Subscriptions plan not found');
-//   }
-//   const stripeSubscription = await stripe.subscriptions.create({
-//     customer: findUser._id,
-//     items: [{ plan: findPlan._id.toString() }],
-//     payment_behavior: 'default_incomplete',
-//     expand: ['latest_invoice.payment_intent'],
-//   });
-
-//   // Handle payment status from Stripe
-//   if (stripeSubscription.status === 'active') {
-//     findUser.subscriptionPlan = findPlan.plan_type;
-//     await findUser.save();
-
-//     return {
-//       message: 'Subscription purchased successfully',
-//     };
-//   } else {
-//     return {
-//       message: 'Failed to purchase subscription',
-//     };
-//   }
-// };
-//*
 
 export const SubscriptionsPlanService = {
   addSubscription,

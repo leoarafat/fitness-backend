@@ -54,7 +54,7 @@ const AllSubscriber = async (query: Record<string, unknown>) => {
   const result = await subscriptionsQuery.modelQuery;
   const meta = await subscriptionsQuery.countTotal();
   const subscriptions = await Subscription.find({});
-  const planTypes = subscriptions?.map(sub => sub?.plan_type);
+  const planTypes = [...new Set(subscriptions?.map(sub => sub?.plan_type))];
   return {
     meta,
     data: result,
