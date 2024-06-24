@@ -42,7 +42,7 @@ router.post(
 );
 router.get(
   '/get-faq',
-  // auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.USER, ENUM_USER_ROLE.SUPER_ADMIN),
+
   ManageController.getFAQ,
 );
 router.get(

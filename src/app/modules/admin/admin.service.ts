@@ -25,17 +25,21 @@ import { ENUM_USER_ROLE } from '../../../enums/user';
 import sendEmail from '../../../utils/sendEmail';
 import { registrationSuccessEmailBody } from '../../../mails/user.register';
 import { logger } from '../../../shared/logger';
+import { deleteAdminEmailBody } from '../../../mails/delete.admin';
 
 //*
-const registrationUser = async (payload: IRegistration) => {
+const registrationUser = async (userId: IReqUser, payload: IRegistration) => {
   const { name, email, password } = payload;
-
   const user = {
     name,
     email,
     password,
   };
   const isEmailExist = await User.findOne({ email });
+  const findSuperAdmin = await User.findById(userId?.userId);
+  if (!findSuperAdmin) {
+    throw new ApiError(404, 'Super Admin Not Found');
+  }
   if (isEmailExist) {
     throw new ApiError(400, 'Email already exist');
   }
@@ -43,8 +47,8 @@ const registrationUser = async (payload: IRegistration) => {
   const newUser = await User.create(payload);
   const data = { user: { name: user.name } };
   sendEmail({
-    email: user.email,
-    subject: 'Congratulations to register successfully',
+    email: findSuperAdmin?.email,
+    subject: 'Congratulations to register new admin successfully',
     html: registrationSuccessEmailBody(data),
   }).catch(error => {
     logger.error('Failed to send email:', error);
@@ -135,8 +139,21 @@ const deleteUser = async (id: string): Promise<IUser | null> => {
   const result = await User.findByIdAndDelete(id);
   return result;
 };
-const deleteAdmin = async (id: string) => {
+const deleteAdmin = async (user: IReqUser, id: string) => {
+  const findSuperAdmin = await User.findById(user?.userId);
+  if (!findSuperAdmin) {
+    throw new ApiError(404, 'Super Admin Not Found');
+  }
   const result = await User.findByIdAndDelete(id);
+
+  const data = { user: { name: findSuperAdmin.name } };
+  sendEmail({
+    email: findSuperAdmin?.email,
+    subject: 'Deleted an Admin',
+    html: deleteAdminEmailBody(data),
+  }).catch(error => {
+    logger.error('Failed to send email:', error);
+  });
   return result;
 };
 //*

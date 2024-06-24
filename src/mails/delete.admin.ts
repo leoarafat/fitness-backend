@@ -1,4 +1,4 @@
-export const registrationSuccessEmailBody = (userData: any) => `
+export const deleteAdminEmailBody = (userData: any) => `
   <html>
     <head>
       <style>
@@ -39,21 +39,13 @@ export const registrationSuccessEmailBody = (userData: any) => `
         .button:hover {
           background-color: #0056b3;
         }
-        a {
-          color: #007bff;
-          text-decoration: none;
-        }
-        a:hover {
-          text-decoration: underline;
-        }
+
       </style>
     </head>
     <body>
       <div class="container">
-        <h1>Welcome to Fitness Website</h1>
-        <p>You've Added ${userData?.user?.name} On Admin Panel,</p>
-        <p>Thank you for registering with Fitness Website.</p>
-        <p>If you have any questions, please contact us at <a href="mailto:bdCalling@gmail.com">bdCalling@gmail.com</a>.</p>
+        <h1>Deleted An Admin From Fitness Website</h1>
+        <p>You've Deleted ${userData?.user?.name} From Admin Panel,</p>
       </div>
     </body>
   </html>

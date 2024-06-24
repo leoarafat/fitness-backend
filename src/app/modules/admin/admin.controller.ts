@@ -11,7 +11,10 @@ import {
 
 const registrationUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
-    const result = await AdminService.registrationUser(req.body);
+    const result = await AdminService.registrationUser(
+      req.user as IReqUser,
+      req.body,
+    );
 
     sendResponse(res, {
       statusCode: 200,
@@ -78,7 +81,7 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
 });
 const deleteAdmin = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
-  const result = await AdminService.deleteAdmin(id);
+  const result = await AdminService.deleteAdmin(req.user as IReqUser, id);
   sendResponse(res, {
     statusCode: 200,
     success: true,
