@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Request } from 'express';
+
 import ApiError from '../../../errors/ApiError';
 import { Banner } from './banner.model';
 import httpStatus from 'http-status';

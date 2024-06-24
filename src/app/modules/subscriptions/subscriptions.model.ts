@@ -29,7 +29,6 @@ const subscriptionSchema = new Schema<ISubscription>(
       type: String,
       required: true,
       enum: ['paid', 'unpaid', 'trail'],
-      default: 'unpaid',
     },
     plan_type: {
       type: String,
@@ -40,7 +39,6 @@ const subscriptionSchema = new Schema<ISubscription>(
       type: String,
       required: true,
       enum: ['active', 'inactive'],
-      default: 'active',
     },
     transactionId: { type: String, required: false },
   },

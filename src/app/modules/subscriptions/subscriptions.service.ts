@@ -29,13 +29,14 @@ const upgradeSubscription = async (req: Request) => {
   );
 
   const subscription = await Subscription.create({
+    amount,
+    startDate,
+    endDate,
     plan_id: planId,
     plan_type: subscriptionPlan?.plan_type,
     user_id: req?.user?.userId,
     payment_status: payment_status,
-    amount,
-    startDate,
-    endDate,
+    status: 'active',
     transactionId: transactionId,
   });
   await checkUser.save();
