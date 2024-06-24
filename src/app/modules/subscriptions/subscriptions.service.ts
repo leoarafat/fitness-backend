@@ -12,6 +12,7 @@ import QueryBuilder from '../../../builder/QueryBuilder';
 
 const upgradeSubscription = async (req: Request) => {
   const { planId, transactionId, payment_status, amount } = req.body;
+
   const checkUser = await User.findById(req?.user?.userId);
 
   if (!checkUser) {

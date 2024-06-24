@@ -33,7 +33,7 @@ router.patch(
   '/edit/:id',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   uploadFile(),
-  validateRequest(BlogValidation.update),
+  // validateRequest(BlogValidation.update),
   BlogController.updateBlog,
 );
 

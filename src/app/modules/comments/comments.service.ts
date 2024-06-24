@@ -97,7 +97,7 @@ const singleCommentByClass = async (req: Request) => {
       .populate([
         {
           path: 'userId',
-          select: 'email _id profile_image',
+          select: 'email  profile_image',
         },
       ])
       .limit(Number(limit));
@@ -112,7 +112,7 @@ const singleCommentByClass = async (req: Request) => {
       .populate([
         {
           path: 'userId',
-          select: 'email _id profile_image',
+          select: 'email  profile_image',
         },
       ])
       .limit(Number(limit));

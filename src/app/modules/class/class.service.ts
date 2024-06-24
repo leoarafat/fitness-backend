@@ -13,9 +13,9 @@ import { WatchList } from '../watch-list/watch-list.model';
 
 const createClass = async (req: Request) => {
   const { ...classData } = req.body as IClass;
-
+  console.log(classData);
   const { files } = req;
-
+  console.log(files);
   let pdfFile = undefined;
   //@ts-ignore
   if (files?.pdf) {
@@ -36,7 +36,7 @@ const createClass = async (req: Request) => {
     video = `/videos/${files.video[0].filename}`;
   }
 
-  if (!pdfFile || !docFile || !video) {
+  if (!video) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'All file is required');
   }
   //@ts-ignore

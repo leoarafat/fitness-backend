@@ -16,7 +16,7 @@ router.get(
   FeedbackController.getFeedbackForAdmin,
 );
 router.patch(
-  '/approve',
+  '/approve/:id',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   FeedbackController.approvedFeedback,
 );
