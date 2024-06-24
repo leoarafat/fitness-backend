@@ -4,11 +4,12 @@ const bannerSchema = new Schema(
   {
     video: {
       type: String,
-      required: true,
     },
     title: {
       type: String,
-      required: true,
+    },
+    logo: {
+      type: String,
     },
   },
   {

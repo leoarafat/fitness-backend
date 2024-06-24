@@ -24,6 +24,7 @@ import { sendResetEmail } from '../auth/sendResetMails';
 import { ENUM_USER_ROLE } from '../../../enums/user';
 import sendEmail from '../../../utils/sendEmail';
 import { registrationSuccessEmailBody } from '../../../mails/user.register';
+import { logger } from '../../../shared/logger';
 
 //*
 const registrationUser = async (payload: IRegistration) => {
@@ -46,7 +47,7 @@ const registrationUser = async (payload: IRegistration) => {
     subject: 'Congratulations to register successfully',
     html: registrationSuccessEmailBody(data),
   }).catch(error => {
-    console.error('Failed to send email:', error);
+    logger.error('Failed to send email:', error);
   });
   const { password: omit, ...userWithoutPassword } = newUser.toObject();
 

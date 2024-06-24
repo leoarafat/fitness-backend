@@ -15,6 +15,8 @@ export type CustomRequest = {
     thumbnail?: UploadedFile[];
     video_thumbnail?: UploadedFile[];
     video?: UploadedFile[];
+    logo?: UploadedFile[];
+    image?: UploadedFile[];
   };
   params: {
     id: string;
