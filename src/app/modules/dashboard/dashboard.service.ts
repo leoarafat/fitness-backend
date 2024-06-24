@@ -72,6 +72,20 @@ const totalCount = async () => {
     const lastMonth = new Date();
     lastMonth.setMonth(lastMonth.getMonth() - 1);
 
+    //! PrevMonths subs count
+    const prevMonthBasicSubscriber = await Subscription.countDocuments({
+      createdAt: { $lte: lastMonth },
+      plan_type: 'basic',
+    });
+    const prevMonthStandardSubscriber = await Subscription.countDocuments({
+      createdAt: { $lte: lastMonth },
+      plan_type: 'standard',
+    });
+    const prevMonthPremiumSubscriber = await Subscription.countDocuments({
+      createdAt: { $lte: lastMonth },
+      plan_type: 'premium',
+    });
+
     const prevMonthUsers = await User.countDocuments({
       createdAt: { $lte: lastMonth },
     });
@@ -124,6 +138,18 @@ const totalCount = async () => {
       prevMonthFemaleUsers,
     );
     const subscriberGrowth = calculateGrowth(subscribers, prevMonthSubscribers);
+    const basicSubscriberGrowth = calculateGrowth(
+      basicSubscriber,
+      prevMonthBasicSubscriber,
+    );
+    const standardSubscriberGrowth = calculateGrowth(
+      standardSubscriber,
+      prevMonthStandardSubscriber,
+    );
+    const premiumSubscriberGrowth = calculateGrowth(
+      premiumSubscriber,
+      prevMonthPremiumSubscriber,
+    );
     const sellingProductGrowth = calculateGrowth(
       totalSellingProduct,
       prevMonthSellingProduct,
@@ -168,6 +194,18 @@ const totalCount = async () => {
       subscriberGrowth,
       prevSubscriberGrowth,
     );
+    const basicSubscriberGrowthChange = calculateChange(
+      basicSubscriberGrowth,
+      prevMonthBasicSubscriber,
+    );
+    const standardSubscriberGrowthChange = calculateChange(
+      standardSubscriberGrowth,
+      prevMonthStandardSubscriber,
+    );
+    const premiumSubscriberGrowthChange = calculateChange(
+      premiumSubscriberGrowth,
+      prevMonthPremiumSubscriber,
+    );
     const sellingProductGrowthChange = calculateChange(
       sellingProductGrowth,
       prevSellingProductGrowth,
@@ -204,9 +242,25 @@ const totalCount = async () => {
           subscribers: subscribers,
           subscriberGrowth: subscriberGrowth,
           subscriberGrowthChange: subscriberGrowthChange,
-          basicSubscriber: basicSubscriber,
-          standardSubscriber: standardSubscriber,
-          premiumSubscriber: premiumSubscriber,
+        },
+      ],
+      subscriptionByType: [
+        {
+          basic: {
+            basicSubscriber: basicSubscriber,
+            basicSubscriberGrowth: basicSubscriberGrowth,
+            basicSubscriberGrowthChange: basicSubscriberGrowthChange,
+          },
+          standard: {
+            standardSubscriber: standardSubscriber,
+            standardSubscriberGrowth: standardSubscriberGrowth,
+            standardSubscriberGrowthChange: standardSubscriberGrowthChange,
+          },
+          premium: {
+            premiumSubscriber: premiumSubscriber,
+            premiumSubscriberGrowth: premiumSubscriberGrowth,
+            premiumSubscriberGrowthChange: premiumSubscriberGrowthChange,
+          },
         },
       ],
       totalSellingProduct: [
