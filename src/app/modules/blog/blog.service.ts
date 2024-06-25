@@ -68,7 +68,10 @@ const getBlogs = async (query: Record<string, unknown>, user: IReqUser) => {
     findSubscription.plan_type === 'standard'
   ) {
     const postQuery = (
-      await new QueryBuilder(Blog.find({ accessType: 'standard' }), query)
+      await new QueryBuilder(
+        Blog.find({ accessType: { $in: ['basic', 'standard'] } }),
+        query,
+      )
         .search(['title', 'topic', 'description'])
         .filter()
     )
@@ -90,7 +93,10 @@ const getBlogs = async (query: Record<string, unknown>, user: IReqUser) => {
     findSubscription.plan_type === 'premium'
   ) {
     const postQuery = (
-      await new QueryBuilder(Blog.find({ accessType: 'premium' }), query)
+      await new QueryBuilder(
+        Blog.find({ accessType: { $in: ['basic', 'standard', 'premium'] } }),
+        query,
+      )
         .search(['title', 'topic', 'description'])
         .filter()
     )

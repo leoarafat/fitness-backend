@@ -32,7 +32,8 @@ const initializeSocketIO = (server: any) => {
       console.log(`ID: ${socket.id} disconnected`);
     });
   });
-
+  //@ts-ignore
+  global.io = io;
   return io;
 };
 

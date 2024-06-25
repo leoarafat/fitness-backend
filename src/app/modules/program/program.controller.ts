@@ -3,6 +3,7 @@ import catchAsync from '../../../shared/catchasync';
 
 import sendResponse from '../../../shared/sendResponse';
 import { programService } from './program.service';
+import { IReqUser } from '../user/user.interface';
 
 const createProgram = catchAsync(async (req: Request, res: Response) => {
   const result = await programService.addProgram(req);
@@ -14,7 +15,10 @@ const createProgram = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const allPrograms = catchAsync(async (req: Request, res: Response) => {
-  const result = await programService.getAllProgram(req.query);
+  const result = await programService.getAllProgram(
+    req.query,
+    req.user as IReqUser,
+  );
   sendResponse(res, {
     statusCode: 200,
     success: true,

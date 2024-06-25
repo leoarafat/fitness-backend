@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
-import { IProgram } from './program.interface';
 import { Program } from './program.model';
-import { IGenericResponse } from '../../../interfaces/paginations';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import { Series } from '../series/series.model';
 import { Request } from 'express';
 import { Classes } from '../class/class.model';
+import { ENUM_USER_ROLE } from '../../../enums/user';
+import { Subscription } from '../subscriptions/subscriptions.model';
+import { IReqUser } from '../user/user.interface';
 
 const addProgram = async (req: Request) => {
   const payload = req.body;
@@ -32,21 +33,110 @@ const addProgram = async (req: Request) => {
 
 const getAllProgram = async (
   query: Record<string, unknown>,
-): Promise<IGenericResponse<IProgram[]>> => {
-  const userQuery = (
-    await new QueryBuilder(Program.find(), query).search(['title']).filter()
-  )
-    .sort()
-    .paginate()
-    .fields();
+  user: IReqUser,
+) => {
+  const { userId, role } = user;
 
-  const result = await userQuery.modelQuery;
-  const meta = await userQuery.countTotal();
+  const findSubscription = await Subscription.findOne({ user_id: userId });
 
-  return {
-    meta,
-    data: result,
-  };
+  if (
+    role !== ENUM_USER_ROLE.ADMIN &&
+    role !== ENUM_USER_ROLE.SUPER_ADMIN &&
+    (!findSubscription || findSubscription === null)
+  ) {
+    throw new ApiError(404, "You haven't Subscription");
+  }
+
+  if (
+    findSubscription &&
+    findSubscription.status === 'active' &&
+    findSubscription.plan_type === 'basic'
+  ) {
+    const programQuery = (
+      await new QueryBuilder(Program.find({ accessType: 'basic' }), query)
+        .search(['title'])
+        .filter()
+    )
+      .sort()
+      .paginate()
+      .fields();
+
+    const result = await programQuery.modelQuery;
+    const meta = await programQuery.countTotal();
+
+    return {
+      meta,
+      data: result,
+    };
+  }
+  if (
+    findSubscription &&
+    findSubscription.status === 'active' &&
+    findSubscription.plan_type === 'standard'
+  ) {
+    const programQuery = (
+      await new QueryBuilder(
+        Program.find({ accessType: { $in: ['basic', 'standard'] } }),
+        query,
+      )
+        .search(['title'])
+        .filter()
+    )
+      .sort()
+      .paginate()
+      .fields();
+
+    const result = await programQuery.modelQuery;
+    const meta = await programQuery.countTotal();
+
+    return {
+      meta,
+      data: result,
+    };
+  }
+  if (
+    findSubscription &&
+    findSubscription.status === 'active' &&
+    findSubscription.plan_type === 'premium'
+  ) {
+    const programQuery = (
+      await new QueryBuilder(
+        Program.find({ accessType: { $in: ['basic', 'standard', 'premium'] } }),
+        query,
+      )
+        .search(['title'])
+        .filter()
+    )
+      .sort()
+      .paginate()
+      .fields();
+
+    const result = await programQuery.modelQuery;
+    const meta = await programQuery.countTotal();
+
+    return {
+      meta,
+      data: result,
+    };
+  }
+  if (role === ENUM_USER_ROLE.ADMIN || role === ENUM_USER_ROLE.SUPER_ADMIN) {
+    const programQuery = (
+      await new QueryBuilder(Program.find({}), query)
+        .search(['title', 'topic', 'description'])
+        .filter()
+    )
+      .sort()
+      .paginate()
+      .fields();
+
+    const result = await programQuery.modelQuery;
+    const meta = await programQuery.countTotal();
+
+    return {
+      meta,
+      data: result,
+    };
+  }
 };
 
 //!

@@ -13,7 +13,7 @@ const programSchema = new Schema<IProgram>(
     },
     accessType: {
       type: String,
-      enum: ['Basic', 'Standard', 'Premium'],
+      enum: ['basic', 'standard', 'premium'],
       required: true,
     },
   },

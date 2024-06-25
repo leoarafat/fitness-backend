@@ -42,11 +42,13 @@ const upgradeSubscription = async (req: Request) => {
     transactionId: transactionId,
   });
   await checkUser.save();
-  await Notification.create({
+  const notification = await Notification.create({
     user: checkUser?._id,
     title: 'Unlock New Subscription Plan',
-    message: `Hello ${checkUser?.name} Congratulations for unlock ${subscriptionPlan?.plan_type} Subscription.`,
+    message: `Unlock New Plan From ${checkUser?.name} on ${subscriptionPlan?.plan_type} Subscription.`,
   });
+  //@ts-ignore
+  global.io.to(checkUser?._id.toString()).emit('notification', notification);
   return subscription;
 };
 const AllSubscriber = async (query: Record<string, unknown>) => {

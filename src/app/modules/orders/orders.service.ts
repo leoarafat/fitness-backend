@@ -26,11 +26,13 @@ const makeOrder = async (req: Request) => {
   }
   //@ts-ignore
   payload.user = userId;
-  await Notification.create({
+  const notification = await Notification.create({
     user: isExistUser?._id,
     title: 'New Order Placed',
-    message: `Hello ${isExistUser?.name} Congratulations for Order ${isExistProduct?.productName} Product.`,
+    message: `New order arrived from ${isExistUser?.name} on ${isExistProduct?.productName} Product.`,
   });
+  //@ts-ignore
+  global.io.to(isExistUser?.id.toString()).emit('notification', notification);
   return await Order.create(payload);
 };
 
