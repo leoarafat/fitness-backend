@@ -17,13 +17,15 @@ const addBlog = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getBlogs = catchAsync(async (req: Request, res: Response) => {
-  const result = await BlogService.getBlogs(req.query);
+  const result = await BlogService.getBlogs(req.query, req.user as IReqUser);
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: 'Blog retrieved successful',
+    //@ts-ignore
     data: result.data,
+    //@ts-ignore
     meta: result.meta,
   });
 });

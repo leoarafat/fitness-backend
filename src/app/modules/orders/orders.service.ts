@@ -10,6 +10,7 @@ import { IOrder } from './orders.interface';
 import { Products } from '../products/products.model';
 import User from '../user/user.model';
 import { IReqUser } from '../user/user.interface';
+import Notification from '../notifications/notifications.model';
 
 const makeOrder = async (req: Request) => {
   const payload = req.body as IOrder;
@@ -25,6 +26,11 @@ const makeOrder = async (req: Request) => {
   }
   //@ts-ignore
   payload.user = userId;
+  await Notification.create({
+    user: isExistUser?._id,
+    title: 'New Order Placed',
+    message: `Hello ${isExistUser?.name} Congratulations for Order ${isExistProduct?.productName} Product.`,
+  });
   return await Order.create(payload);
 };
 

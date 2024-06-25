@@ -7,6 +7,9 @@ import QueryBuilder from '../../../builder/QueryBuilder';
 import httpStatus from 'http-status';
 import unlinkFile from '../../../utils/unLink';
 
+import { ENUM_USER_ROLE } from '../../../enums/user';
+import { Subscription } from '../subscriptions/subscriptions.model';
+
 //*
 const addBlog = async (user: IReqUser, req: Request) => {
   const blogData = req.body;
@@ -24,23 +27,103 @@ const addBlog = async (user: IReqUser, req: Request) => {
   return await Blog.create(data);
 };
 //*
-const getBlogs = async (query: Record<string, unknown>) => {
-  const postQuery = (
-    await new QueryBuilder(Blog.find({}), query)
-      .search(['title', 'topic', 'description'])
-      .filter()
-  )
-    .sort()
-    .paginate()
-    .fields();
+const getBlogs = async (query: Record<string, unknown>, user: IReqUser) => {
+  const { userId, role } = user;
 
-  const result = await postQuery.modelQuery;
-  const meta = await postQuery.countTotal();
+  const findSubscription = await Subscription.findOne({ user_id: userId });
 
-  return {
-    meta,
-    data: result,
-  };
+  if (
+    role !== ENUM_USER_ROLE.ADMIN &&
+    role !== ENUM_USER_ROLE.SUPER_ADMIN &&
+    (!findSubscription || findSubscription === null)
+  ) {
+    throw new ApiError(404, "You haven't Subscription");
+  }
+
+  if (
+    findSubscription &&
+    findSubscription.status === 'active' &&
+    findSubscription.plan_type === 'basic'
+  ) {
+    const postQuery = (
+      await new QueryBuilder(Blog.find({ accessType: 'basic' }), query)
+        .search(['title', 'topic', 'description'])
+        .filter()
+    )
+      .sort()
+      .paginate()
+      .fields();
+
+    const result = await postQuery.modelQuery;
+    const meta = await postQuery.countTotal();
+
+    return {
+      meta,
+      data: result,
+    };
+  }
+  if (
+    findSubscription &&
+    findSubscription.status === 'active' &&
+    findSubscription.plan_type === 'standard'
+  ) {
+    const postQuery = (
+      await new QueryBuilder(Blog.find({ accessType: 'standard' }), query)
+        .search(['title', 'topic', 'description'])
+        .filter()
+    )
+      .sort()
+      .paginate()
+      .fields();
+
+    const result = await postQuery.modelQuery;
+    const meta = await postQuery.countTotal();
+
+    return {
+      meta,
+      data: result,
+    };
+  }
+  if (
+    findSubscription &&
+    findSubscription.status === 'active' &&
+    findSubscription.plan_type === 'premium'
+  ) {
+    const postQuery = (
+      await new QueryBuilder(Blog.find({ accessType: 'premium' }), query)
+        .search(['title', 'topic', 'description'])
+        .filter()
+    )
+      .sort()
+      .paginate()
+      .fields();
+
+    const result = await postQuery.modelQuery;
+    const meta = await postQuery.countTotal();
+
+    return {
+      meta,
+      data: result,
+    };
+  }
+  if (role === ENUM_USER_ROLE.ADMIN || role === ENUM_USER_ROLE.SUPER_ADMIN) {
+    const postQuery = (
+      await new QueryBuilder(Blog.find({}), query)
+        .search(['title', 'topic', 'description'])
+        .filter()
+    )
+      .sort()
+      .paginate()
+      .fields();
+
+    const result = await postQuery.modelQuery;
+    const meta = await postQuery.countTotal();
+
+    return {
+      meta,
+      data: result,
+    };
+  }
 };
 //*
 const getSingleBlog = async (id: string) => {

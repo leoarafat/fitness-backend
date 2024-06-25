@@ -8,4 +8,5 @@ export type IBlog = {
   images: [];
   created_by: Types.ObjectId | IAdmin;
   accessType: 'Basic' | 'Standard' | 'Premium';
+  youtubeUrl: string;
 };

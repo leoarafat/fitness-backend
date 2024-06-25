@@ -68,7 +68,7 @@ const getAllUsers = async (
   query: Record<string, unknown>,
 ): Promise<IGenericResponse<IUser[]>> => {
   const userQuery = (
-    await new QueryBuilder(User.find(), query)
+    await new QueryBuilder(User.find({ role: 'USER' }), query)
       .search(userSearchableField)
       .filter()
   )

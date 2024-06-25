@@ -32,8 +32,11 @@ const blogSchema = new Schema<IBlog>(
     },
     accessType: {
       type: String,
-      enum: ['Basic', 'Standard', 'Premium'],
+      enum: ['basic', 'standard', 'premium'],
       required: true,
+    },
+    youtubeUrl: {
+      type: String,
     },
   },
   {

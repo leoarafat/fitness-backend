@@ -9,6 +9,7 @@ import { IReqUser } from '../user/user.interface';
 import User from '../user/user.model';
 
 import QueryBuilder from '../../../builder/QueryBuilder';
+import Notification from '../notifications/notifications.model';
 
 const upgradeSubscription = async (req: Request) => {
   const { planId, transactionId, payment_status, amount } = req.body;
@@ -41,6 +42,11 @@ const upgradeSubscription = async (req: Request) => {
     transactionId: transactionId,
   });
   await checkUser.save();
+  await Notification.create({
+    user: checkUser?._id,
+    title: 'Unlock New Subscription Plan',
+    message: `Hello ${checkUser?.name} Congratulations for unlock ${subscriptionPlan?.plan_type} Subscription.`,
+  });
   return subscription;
 };
 const AllSubscriber = async (query: Record<string, unknown>) => {
