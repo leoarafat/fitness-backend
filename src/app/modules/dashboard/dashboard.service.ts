@@ -722,7 +722,7 @@ const subscriptionUserDetails = async () => {
   const subscriptions = await Subscription.find({}).populate([
     {
       path: 'user_id',
-      select: 'name email',
+      select: 'name email gender age',
     },
     {
       path: 'plan_id',
@@ -735,7 +735,7 @@ const ecommerceUserDetails = async () => {
   const ecommerce = await Order.find({}).populate([
     {
       path: 'user',
-      select: 'name email',
+      select: 'name email name email gender age',
     },
     {
       path: 'product',

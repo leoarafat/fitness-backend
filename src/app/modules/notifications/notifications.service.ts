@@ -5,14 +5,22 @@ import { IReqUser } from '../user/user.interface';
 
 //Get
 const getNotifications = async () => {
-  const result = await Notification.find().sort({ createdAt: -1 });
-  return result;
+  const allNotification = await Notification.find().sort({ createdAt: -1 });
+  const unreadNotification = await Notification.countDocuments({
+    status: false,
+  });
+  const readNotification = await Notification.countDocuments({ status: true });
+  return {
+    allNotification,
+    unreadNotification,
+    readNotification,
+  };
 };
 
 //Update
 const updateNotification = async (req: Request) => {
   const id = req.params.id;
-  console.log(id);
+
   const notification = await Notification.findById(id);
   if (!notification) {
     throw new ApiError(404, 'Notification not found');

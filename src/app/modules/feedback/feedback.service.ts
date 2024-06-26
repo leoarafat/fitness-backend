@@ -72,9 +72,17 @@ const approvedFeedback = async (id: string) => {
     { new: true, runValidators: true },
   );
 };
+const deleteFeedback = async (id: string) => {
+  const isExist = await FeedBack.findById(id);
+  if (!isExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Feedback not found');
+  }
+  return await FeedBack.findByIdAndDelete(id);
+};
 export const FeedBackService = {
   sendFeedBack,
   getFeedback,
   getFeedbackForAdmin,
   approvedFeedback,
+  deleteFeedback,
 };

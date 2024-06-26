@@ -12,7 +12,11 @@ router.post(
   uploadFile(),
   ProgramController.createProgram,
 );
-router.get('/all', ProgramController.allPrograms);
+router.get(
+  '/all',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.USER),
+  ProgramController.allPrograms,
+);
 
 router.get('/:id', ProgramController.singleProgram);
 

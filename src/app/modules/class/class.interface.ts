@@ -14,4 +14,5 @@ export type IClass = {
   pdfFile: string;
   docFile: string;
   isRead: boolean;
+  accessType: 'basic' | 'standard' | 'premium';
 };

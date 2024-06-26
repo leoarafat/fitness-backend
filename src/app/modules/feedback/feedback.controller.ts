@@ -39,10 +39,20 @@ const approvedFeedback = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const deleteFeedback = catchAsync(async (req: Request, res: Response) => {
+  const result = await FeedBackService.deleteFeedback(req.params.id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Feedback Deleted successfully',
+    data: result,
+  });
+});
 
 export const FeedbackController = {
   sendFeedBack,
   getFeedback,
   approvedFeedback,
   getFeedbackForAdmin,
+  deleteFeedback,
 };

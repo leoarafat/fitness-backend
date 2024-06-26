@@ -59,16 +59,7 @@ const addReply = async (req: Request) => {
 };
 const allComments = async (query: Record<string, unknown>) => {
   const commentQuery = (
-    await new QueryBuilder(
-      Comment.find(),
-      // .populate({
-      //   path: 'reply.adminId',
-      //   select: '_id email name',
-      // }),
-      query,
-    )
-      .search(['comment'])
-      .filter()
+    await new QueryBuilder(Comment.find(), query).search(['comment']).filter()
   )
     .sort()
     .paginate()
@@ -107,7 +98,7 @@ const singleCommentByClass = async (req: Request) => {
       totalComment: totalComment?.length,
     };
   }
-  if (role === 'ADMIN') {
+  if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
     const result = await Comment.find({ classId: id })
       .populate([
         {
@@ -117,7 +108,7 @@ const singleCommentByClass = async (req: Request) => {
       ])
       .limit(Number(limit));
     const totalComment = await Comment.find({ classId: id });
-    console.log(result);
+
     return {
       comments: result,
       totalComment: totalComment?.length,
